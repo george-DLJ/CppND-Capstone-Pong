@@ -13,9 +13,9 @@ project(Pong)
 find_package(SDL2 REQUIRED)
 include_directories(${SDL2_INCLUDE_DIRS} src)
 
-add_executable(Pong src/main.cpp)
+add_executable(PongGame src/main.cpp)
 
 # NOTE: from CppND-Capstone-Snake-Game Repo (still not necessary)
 # add_executable(SnakeGame src/main.cpp src/game.cpp src/controller.cpp src/renderer.cpp src/snake.cpp)
-# string(STRIP ${SDL2_LIBRARIES} SDL2_LIBRARIES)
-# target_link_libraries(SnakeGame ${SDL2_LIBRARIES})
+string(STRIP ${SDL2_LIBRARIES} SDL2_LIBRARIES)
+target_link_libraries(PongGame ${SDL2_LIBRARIES})
