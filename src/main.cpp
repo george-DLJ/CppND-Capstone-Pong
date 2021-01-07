@@ -71,8 +71,8 @@ bool loadMedia()
     bool success = true;
 
     //Load splash image
-    gHelloWorld = SDL_LoadBMP( "hello_world.bmp" );
-    // gHelloWorld = IMG_Load( "images/hello_world.png" ); //TODO: configure Library on CMAKE
+    //gHelloWorld = SDL_LoadBMP( "hello_world.bmp" );
+    gHelloWorld = IMG_Load( "hello_world.png" ); //TODO: configure Library on CMAKE
     if( gHelloWorld == NULL )
     {
         printf( "Unable to load image %s! SDL Error: %s\n", "02_getting_an_image_on_the_screen/hello_world.bmp", SDL_GetError() );
