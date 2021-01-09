@@ -14,6 +14,9 @@ const int SCREEN_HEIGHT = 480;
  *  - void close() --> frees media an closes
  *  NOTE: While in Delay keyboard input cannot be accepted.
  *  NOTE: to use PNG images, the SDL_image library must be installed:
+ *       open a terminal and write:
+ *          sudo apt-get install libsdl2-image-dev
+ *          
  *        see: https://gamedev.stackexchange.com/a/135894
  * */
 //
@@ -107,24 +110,49 @@ int main() {
     }
     else
     {
+        // setup background color:
+        SDL_FillRect( gScreenSurface, NULL, SDL_MapRGB( gScreenSurface->format, 0xFF, 0xA5, 0x00 ) );
+        
         // Load Media:
         if(!loadMedia() ) {
             std::cout << "Failed to load media! ... filling with white surface instead..." << "\n";
-
-            //Load empty Window and Fill the surface white
-            SDL_FillRect( gScreenSurface, NULL, SDL_MapRGB( gScreenSurface->format, 0xFF, 0xFF, 0xFF ) );
+            return 0;
         }
-        else
+
+        //Main loop flag
+        bool quit = false;
+
+        //Event handler
+        SDL_Event e;
+
+        //While app is running
+        while( !quit )
         {
+            // 1. Handle Events
+            while ( SDL_PollEvent(&e) != 0 )
+            {
+                //User request quit
+                if( e.type == SDL_QUIT )
+                {
+                    quit = true;
+                }
+            }
+            //User requiest quit
+            if(e.type == SDL_QUIT )
+            {
+                quit = true;
+            }    
+            
+            // 2. Simulate some work (e.g. calculations)
+            SDL_Delay( 100 );
+
+            // 3. Render
             //Apply the image
             SDL_BlitSurface( gHelloWorld, NULL, gScreenSurface, NULL );
-        }
         
-        //Update the surface
-        SDL_UpdateWindowSurface( gWindow );
-
-        //Wait two seconds
-        SDL_Delay( 2000 );
-    }
+            //Update the surface
+            SDL_UpdateWindowSurface( gWindow );
+         }
+     }
     return 0;
 }
