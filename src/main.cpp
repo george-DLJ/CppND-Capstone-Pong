@@ -1,36 +1,99 @@
-#include <iostream>
+/*This source code copyrighted by Lazy Foo' Productions (2004-2020)
+and may not be redistributed without written permission.*/
+
+//Using SDL, SDL_image, standard IO, and strings
 #include <SDL.h>
-//#include <SDL2/SDL_image.h> //Required to open png images!
+#include <SDL_image.h>
+#include <stdio.h>
+#include <string>
+
+#include "dot.h"
 
 //Screen dimension constants
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
 
-// Lesson 4 handle key presses:
-enum KeyPressSurfaces
+/*
+//Texture wrapper class
+class LTexture
 {
-    KEY_PRESS_SURFACE_DEFAULT,
-    KEY_PRESS_SURFACE_UP,
-    KEY_PRESS_SURFACE_DOWN,
-    KEY_PRESS_SURFACE_LEFT,
-    KEY_PRESS_SURFACE_RIGHT,
-    KEY_PRESS_SURFACE_TOTAL,
-};
+	public:
+		//Initializes variables
+		LTexture();
 
-/**
- *  lazyfoo.net tutorial 
- *  add some modularity by creating following methiods: 
- *  - bool init() --> initializes the SDL window
- *  - bool loadMedia() --> loads a picture
- *  - void close() --> frees media an closes
- *  NOTE: While in Delay keyboard input cannot be accepted.
- *  NOTE: to use PNG images, the SDL_image library must be installed:
- *       open a terminal and write:
- *          sudo apt-get install libsdl2-image-dev
- *          
- *        see: https://gamedev.stackexchange.com/a/135894
- * */
-//
+		//Deallocates memory
+		~LTexture();
+
+		//Loads image at specified path
+		bool loadFromFile( std::string path );
+		
+		#if defined(SDL_TTF_MAJOR_VERSION)
+		//Creates image from font string
+		bool loadFromRenderedText( std::string textureText, SDL_Color textColor );
+		#endif
+
+		//Deallocates texture
+		void free();
+
+		//Set color modulation
+		void setColor( Uint8 red, Uint8 green, Uint8 blue );
+
+		//Set blending
+		void setBlendMode( SDL_BlendMode blending );
+
+		//Set alpha modulation
+		void setAlpha( Uint8 alpha );
+		
+		//Renders texture at given point
+		void render( int x, int y, SDL_Rect* clip = NULL, double angle = 0.0, SDL_Point* center = NULL, SDL_RendererFlip flip = SDL_FLIP_NONE );
+
+		//Gets image dimensions
+		int getWidth();
+		int getHeight();
+
+	private:
+		//The actual hardware texture
+		SDL_Texture* mTexture;
+
+		//Image dimensions
+		int mWidth;
+		int mHeight;
+};
+*/
+
+/* Use external class files dot.h, dot.cpp
+//The dot that will move around on the screen
+class Dot
+{
+    public:
+		//The dimensions of the dot
+		static const int DOT_WIDTH = 20;
+		static const int DOT_HEIGHT = 20;
+
+		//Maximum axis velocity of the dot
+		static const int DOT_VEL = 10;
+
+		//Initializes the variables
+		Dot();
+
+		//Takes key presses and adjusts the dot's velocity
+		void handleEvent( SDL_Event& e );
+
+		//Moves the dot
+		void move();
+
+		//Shows the dot on the screen
+		void render();
+
+    private:
+		//The X and Y offsets of the dot
+		int mPosX, mPosY;
+
+		//The velocity of the dot
+		int mVelX, mVelY;
+};
+*/ 
+
 //Starts up SDL and creates window
 bool init();
 
@@ -40,246 +103,392 @@ bool loadMedia();
 //Frees media and shuts down SDL
 void close();
 
-//Loads individual image (L04)
-SDL_Surface *loadSurface(std::string path);
-
-//private:
 //The window we'll be rendering to
-SDL_Window *gWindow = NULL;
+SDL_Window* gWindow = NULL;
 
-//The surface contained by the window
-SDL_Surface *gScreenSurface = NULL;
+//The window renderer
+SDL_Renderer* gRenderer = NULL;
 
-//The images that correspond to a keypress (L04)
-SDL_Surface *gKeyPressSurfaces[KEY_PRESS_SURFACE_TOTAL];
+////Scene textures
+//LTexture gDotTexture;
 
-//Current displayed image
-SDL_Surface *gCurrentSurface = NULL;
+/* Class LTexture implementation
+LTexture::LTexture()
+{
+	//Initialize
+	mTexture = NULL;
+	mWidth = 0;
+	mHeight = 0;
+}
 
-//Current displayed image
-//SDL_Surface *gStretchedSurface = NULL; //using gCurrentSurface instead
+LTexture::~LTexture()
+{
+	//Deallocate
+	free();
+}
+
+bool LTexture::loadFromFile( std::string path )
+{
+	//Get rid of preexisting texture
+	free();
+
+	//The final texture
+	SDL_Texture* newTexture = NULL;
+
+	//Load image at specified path
+	SDL_Surface* loadedSurface = IMG_Load( path.c_str() );
+	if( loadedSurface == NULL )
+	{
+		printf( "Unable to load image %s! SDL_image Error: %s\n", path.c_str(), IMG_GetError() );
+	}
+	else
+	{
+		//Color key image
+		SDL_SetColorKey( loadedSurface, SDL_TRUE, SDL_MapRGB( loadedSurface->format, 0, 0xFF, 0xFF ) );
+
+		//Create texture from surface pixels
+        newTexture = SDL_CreateTextureFromSurface( gRenderer, loadedSurface );
+		if( newTexture == NULL )
+		{
+			printf( "Unable to create texture from %s! SDL Error: %s\n", path.c_str(), SDL_GetError() );
+		}
+		else
+		{
+			//Get image dimensions
+			mWidth = loadedSurface->w;
+			mHeight = loadedSurface->h;
+		}
+
+		//Get rid of old loaded surface
+		SDL_FreeSurface( loadedSurface );
+	}
+
+	//Return success
+	mTexture = newTexture;
+	return mTexture != NULL;
+}
+
+#if defined(SDL_TTF_MAJOR_VERSION)
+bool LTexture::loadFromRenderedText( std::string textureText, SDL_Color textColor )
+{
+	//Get rid of preexisting texture
+	free();
+
+	//Render text surface
+	SDL_Surface* textSurface = TTF_RenderText_Solid( gFont, textureText.c_str(), textColor );
+	if( textSurface != NULL )
+	{
+		//Create texture from surface pixels
+        mTexture = SDL_CreateTextureFromSurface( gRenderer, textSurface );
+		if( mTexture == NULL )
+		{
+			printf( "Unable to create texture from rendered text! SDL Error: %s\n", SDL_GetError() );
+		}
+		else
+		{
+			//Get image dimensions
+			mWidth = textSurface->w;
+			mHeight = textSurface->h;
+		}
+
+		//Get rid of old surface
+		SDL_FreeSurface( textSurface );
+	}
+	else
+	{
+		printf( "Unable to render text surface! SDL_ttf Error: %s\n", TTF_GetError() );
+	}
+
+	
+	//Return success
+	return mTexture != NULL;
+}
+#endif
+
+void LTexture::free()
+{
+	//Free texture if it exists
+	if( mTexture != NULL )
+	{
+		SDL_DestroyTexture( mTexture );
+		mTexture = NULL;
+		mWidth = 0;
+		mHeight = 0;
+	}
+}
+
+void LTexture::setColor( Uint8 red, Uint8 green, Uint8 blue )
+{
+	//Modulate texture rgb
+	SDL_SetTextureColorMod( mTexture, red, green, blue );
+}
+
+void LTexture::setBlendMode( SDL_BlendMode blending )
+{
+	//Set blending function
+	SDL_SetTextureBlendMode( mTexture, blending );
+}
+		
+void LTexture::setAlpha( Uint8 alpha )
+{
+	//Modulate texture alpha
+	SDL_SetTextureAlphaMod( mTexture, alpha );
+}
+
+void LTexture::render( int x, int y, SDL_Rect* clip, double angle, SDL_Point* center, SDL_RendererFlip flip )
+{
+	//Set rendering space and render to screen
+	SDL_Rect renderQuad = { x, y, mWidth, mHeight };
+
+	//Set clip rendering dimensions
+	if( clip != NULL )
+	{
+		renderQuad.w = clip->w;
+		renderQuad.h = clip->h;
+	}
+
+	//Render to screen
+	SDL_RenderCopyEx( gRenderer, mTexture, clip, &renderQuad, angle, center, flip );
+}
+
+int LTexture::getWidth()
+{
+	return mWidth;
+}
+
+int LTexture::getHeight()
+{
+	return mHeight;
+}
+*/
+
+/*
+Dot::Dot()
+{
+    //Initialize the offsets
+    mPosX = 0;
+    mPosY = 0;
+
+    //Initialize the velocity
+    mVelX = 0;
+    mVelY = 0;
+}
+
+void Dot::handleEvent( SDL_Event& e )
+{
+    //If a key was pressed
+	if( e.type == SDL_KEYDOWN && e.key.repeat == 0 )
+    {
+        //Adjust the velocity
+        switch( e.key.keysym.sym )
+        {
+            case SDLK_UP: mVelY -= DOT_VEL; break;
+            case SDLK_DOWN: mVelY += DOT_VEL; break;
+            case SDLK_LEFT: mVelX -= DOT_VEL; break;
+            case SDLK_RIGHT: mVelX += DOT_VEL; break;
+        }
+    }
+    //If a key was released
+    else if( e.type == SDL_KEYUP && e.key.repeat == 0 )
+    {
+        //Adjust the velocity
+        switch( e.key.keysym.sym )
+        {
+            case SDLK_UP: mVelY += DOT_VEL; break;
+            case SDLK_DOWN: mVelY -= DOT_VEL; break;
+            case SDLK_LEFT: mVelX += DOT_VEL; break;
+            case SDLK_RIGHT: mVelX -= DOT_VEL; break;
+        }
+    }
+}
+
+void Dot::move()
+{
+    //Move the dot left or right
+    mPosX += mVelX;
+
+    //If the dot went too far to the left or right
+    if( ( mPosX < 0 ) || ( mPosX + DOT_WIDTH > SCREEN_WIDTH ) )
+    {
+        //Move back
+        mPosX -= mVelX;
+    }
+
+    //Move the dot up or down
+    mPosY += mVelY;
+
+    //If the dot went too far up or down
+    if( ( mPosY < 0 ) || ( mPosY + DOT_HEIGHT > SCREEN_HEIGHT ) )
+    {
+        //Move back
+        mPosY -= mVelY;
+    }
+}
+
+void Dot::render()
+{
+    //Show the dot
+	//gDotTexture.render( mPosX, mPosY );
+    
+    SDL_Rect block;
+    block.w = DOT_WIDTH;
+    block.h = DOT_HEIGHT;
+
+    SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xCC, 0x00, 0xFF);
+    
+    block.x = mPosX ;
+    block.y = mPosY ;
+    SDL_RenderFillRect(gRenderer, &block);
+    
+}
+*/ 
 
 bool init()
 {
-    //Initialization flag
-    bool success = true;
+	//Initialization flag
+	bool success = true;
 
-    //Initialize SDL
-    if (SDL_Init(SDL_INIT_VIDEO) < 0)
-    {
-        std::cout << "SDAL could not initialize! SDL_Error:" << SDL_GetError << "\n";
-        success = false;
-    }
-    else
-    {
-        //Create window
-        gWindow = SDL_CreateWindow("SDL Tutorial 2", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
-        if (gWindow == NULL)
-        {
-            std::cout << "Window could not be created! SDL_Error: " << SDL_GetError() << "\n";
-            success = false;
-        }
-        else
-        {
-            //Get window surface
-            gScreenSurface = SDL_GetWindowSurface(gWindow);
-        }
-    }
-    return success;
+	//Initialize SDL
+	if( SDL_Init( SDL_INIT_VIDEO ) < 0 )
+	{
+		printf( "SDL could not initialize! SDL Error: %s\n", SDL_GetError() );
+		success = false;
+	}
+	else
+	{
+		//Set texture filtering to linear
+		if( !SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, "1" ) )
+		{
+			printf( "Warning: Linear texture filtering not enabled!" );
+		}
+
+		//Create window
+		gWindow = SDL_CreateWindow( "SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN );
+		if( gWindow == NULL )
+		{
+			printf( "Window could not be created! SDL Error: %s\n", SDL_GetError() );
+			success = false;
+		}
+		else
+		{
+			//Create vsynced renderer for window
+			gRenderer = SDL_CreateRenderer( gWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC );
+			if( gRenderer == NULL )
+			{
+				printf( "Renderer could not be created! SDL Error: %s\n", SDL_GetError() );
+				success = false;
+			}
+			else
+			{
+				//Initialize renderer color
+				SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
+
+				//Initialize PNG loading
+				int imgFlags = IMG_INIT_PNG;
+				if( !( IMG_Init( imgFlags ) & imgFlags ) )
+				{
+					printf( "SDL_image could not initialize! SDL_image Error: %s\n", IMG_GetError() );
+					success = false;
+				}
+			}
+		}
+	}
+
+	return success;
 }
 
-/** 
- * L1 load the helloworld image
- * L3 modified to load pngs 
- * L4 modified to load the images
- * 
- * */
 bool loadMedia()
 {
-    //Loading success flag
-    bool success = true;
+	//Loading success flag
+	bool success = true;
 
-    //Load default surface e.g splash image
-    gKeyPressSurfaces[KEY_PRESS_SURFACE_DEFAULT] = loadSurface("images/press_key.bmp");
-    if (gKeyPressSurfaces[KEY_PRESS_SURFACE_DEFAULT] == NULL)
-    {
-        printf("Failed to load default image!\n");
-        success = false;
-    }
-
-    //Load up surface
-    gKeyPressSurfaces[KEY_PRESS_SURFACE_UP] = loadSurface("images/key_press_up.bmp");
-    if (gKeyPressSurfaces[KEY_PRESS_SURFACE_UP] == NULL)
-    {
-        printf("Failed to load up image!\n");
-        success = false;
-    }
-
-    //Load down surface
-    gKeyPressSurfaces[KEY_PRESS_SURFACE_DOWN] = loadSurface("images/key_press_down.bmp");
-    if (gKeyPressSurfaces[KEY_PRESS_SURFACE_DOWN] == NULL)
-    {
-        printf("Failed to load down image!\n");
-        success = false;
-    }
-
-    //Load left surface
-    gKeyPressSurfaces[KEY_PRESS_SURFACE_LEFT] = loadSurface("images/key_press_left.bmp");
-    if (gKeyPressSurfaces[KEY_PRESS_SURFACE_LEFT] == NULL)
-    {
-        printf("Failed to load left image!\n");
-        success = false;
-    }
-
-    //Load right surface
-    gKeyPressSurfaces[KEY_PRESS_SURFACE_RIGHT] = loadSurface("images/key_press_right.bmp");
-    if (gKeyPressSurfaces[KEY_PRESS_SURFACE_RIGHT] == NULL)
-    {
-        printf("Failed to load right image!\n");
-        success = false;
-    }
-
-    return success;
+/*
+	//Load dot texture
+	if( !gDotTexture.loadFromFile( "images/dot.bmp" ) )
+	{
+		printf( "Failed to load dot texture!\n" );
+		success = false;
+	}
+*/
+	return success;
 }
 
 void close()
 {
-    
-    //Deallocate surfaces
-    for(int i = 0; i < KEY_PRESS_SURFACE_TOTAL; ++i)
-    {
-        SDL_FreeSurface(gKeyPressSurfaces[i]);
-        gKeyPressSurfaces[i] = NULL;
-    }
-   
-    //Destroy window
-    SDL_DestroyWindow(gWindow);
-    gWindow = NULL;
+	/*
+    //Free loaded images
+	gDotTexture.free();
+    */
+	//Destroy window	
+	SDL_DestroyRenderer( gRenderer );
+	SDL_DestroyWindow( gWindow );
+	gWindow = NULL;
+	gRenderer = NULL;
 
-    //Quit SDL subsystems
-    SDL_Quit();
+	//Quit SDL subsystems
+	IMG_Quit();
+	SDL_Quit();
 }
 
-/**
- * L04: load different images depending on user input
- * L05: strech images to window
- * */
-SDL_Surface *loadSurface(std::string path)
+int main( int argc, char* args[] )
 {
-    // The final optimized image (L05)
-    SDL_Surface* optimizedSurface = NULL;
-    
-    //Load image at specified path
-    SDL_Surface *loadedSurface = SDL_LoadBMP(path.c_str()); // BMP are supported on SDL
-    // Alternative to load PNGs and other formats (Require SDL_image.h) and in this workspace install the library each time; also requires make changes on CMakeLists.txt.
-    //SDL_Surface* loadedSurface = IMG_Load( path.c_str() );
+	//Start up SDL and create window
+	if( !init() )
+	{
+		printf( "Failed to initialize!\n" );
+	}
+	else
+	{
+		//Load media
+		if( !loadMedia() )
+		{
+			printf( "Failed to load media!\n" );
+		}
+		else
+		{	
+			//Main loop flag
+			bool quit = false;
 
-    if (loadedSurface == NULL)
-    {
-        std::cout << "Unable to load image " << path.c_str() << "SDL Error: " << SDL_GetError() << "\n";
-    }
-    else // L05
-    {
-        //Convert surface to screen format
-        optimizedSurface = SDL_ConvertSurface( loadedSurface, gScreenSurface->format, 0);
-        {
-            std::cout << "Unable to optimize image " << path.c_str() << "SDL Error: " << SDL_GetError() << "\n";
-        }
-        // Get rid of old loaded surface
-        SDL_FreeSurface(loadedSurface);
-    }
-    
-    return optimizedSurface; //L05
-}
+			//Event handler
+			SDL_Event e;
 
-int main()
-{
-    // Initialize SDL
-    if (!init())
-    {
-        std::cout << "Failed to initialize" << "\n";
-    }
-    else
-    {
-        // setup background color:
-        SDL_FillRect(gScreenSurface, NULL, SDL_MapRGB(gScreenSurface->format, 0xFF, 0xA5, 0x00));
+			//The dot that will be moving around on the screen
+			Dot dot(SCREEN_WIDTH,SCREEN_HEIGHT);
 
-        // Load Media
-        if (!loadMedia())
-        {
-            std::cout << "Failed to load media"
-                      << "\n";
-        }
-        else
-        {
-            //Main loop flag
-            bool quit = false;
+			//While application is running
+			while( !quit )
+			{
+				//Handle events on queue
+				while( SDL_PollEvent( &e ) != 0 )
+				{
+					//User requests quit
+					if( e.type == SDL_QUIT )
+					{
+						quit = true;
+					}
 
-            //Event handler
-            SDL_Event e;
+					//Handle input for the dot
+					dot.handleEvent( e );
+				}
 
-            // set default current surface:
-            gCurrentSurface = gKeyPressSurfaces[KEY_PRESS_SURFACE_DEFAULT];
+				//Move the dot
+				dot.move();
 
-            //While app is running
-            while (!quit)
-            {
-                // 1. Handle Events
-                while (SDL_PollEvent(&e) != 0)
-                {
-                    //User request quit:
-                    if (e.type == SDL_QUIT)
-                    {
-                        quit = true;
-                    }
-                    //User presses a key:
-                    else if (e.type = SDL_KEYDOWN)
-                    {
-                        //select surfaces based on key press
-                        switch (e.key.keysym.sym)
-                        {
-                        case SDLK_UP:
-                            gCurrentSurface = gKeyPressSurfaces[KEY_PRESS_SURFACE_UP];
-                            break;
-                        case SDLK_DOWN:
-                            gCurrentSurface = gKeyPressSurfaces[KEY_PRESS_SURFACE_DOWN];
-                            break;
-                        case SDLK_LEFT:
-                            gCurrentSurface = gKeyPressSurfaces[KEY_PRESS_SURFACE_LEFT];
-                            break;
-                        case SDLK_RIGHT:
-                            gCurrentSurface = gKeyPressSurfaces[KEY_PRESS_SURFACE_RIGHT];
-                            break;
+				//Clear screen
+				SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
+				SDL_RenderClear( gRenderer );
 
-                        default:
-                            gCurrentSurface = gKeyPressSurfaces[KEY_PRESS_SURFACE_DEFAULT];
-                            break;
-                        }
-                    }
-                }
+				//Render objects
+				dot.render(gRenderer);
 
-                // 3. Render
-                //Apply the image
-                // SDL_BlitSurface(gCurrentSurface, NULL, gScreenSurface, NULL);
-                // Apply image stretched: (L05)
-                SDL_Rect stretchRect;
-				stretchRect.x = 0;
-				stretchRect.y = 0;
-				stretchRect.w = SCREEN_WIDTH;
-				stretchRect.h = SCREEN_HEIGHT;
-				SDL_BlitScaled( gCurrentSurface, NULL, gScreenSurface, &stretchRect );
+				//Update screen
+				SDL_RenderPresent( gRenderer );
+			}
+		}
+	}
 
-                //Update the surface
-                SDL_UpdateWindowSurface(gWindow);
+	//Free resources and close SDL
+	close();
 
-                // 4. Simulate some work (e.g. calculations)
-                //SDL_Delay( 100 );
-            }
-        }
-    }
-
-    //Free resources and close SDL
-    close();
-
-    return 0;
+	return 0;
 }
