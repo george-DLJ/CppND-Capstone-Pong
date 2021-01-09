@@ -11,7 +11,7 @@ class Dot
     static const int DOT_HEIGHT = 20;
 
     //Max axis velocity
-    static const int DOT_VEL = 10;
+    static const int DOT_VEL = 1; //
 
     //Constructor
     Dot(const int screenWidth, const int screenHeight);

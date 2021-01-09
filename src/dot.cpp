@@ -3,7 +3,7 @@
 #include "dot.h"
 
 /**
- * TODO: c++14: use initializers {}
+ * 
  * */
 Dot::Dot(const int screenWidth, const int screenHeight):mScreenWidth(screenWidth),mScreenHeight(screenHeight),mPosX(0),mPosY(0), mVelX(0), mVelY(0)
 {
