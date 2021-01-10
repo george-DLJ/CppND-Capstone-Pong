@@ -1,13 +1,13 @@
 /*This source code copyrighted by Lazy Foo' Productions (2004-2020)
 and may not be redistributed without written permission.*/
 
-//Using SDL, SDL_image, standard IO, and strings
+//Using SDL, standard IO, and strings
 #include <SDL.h>
-//#include <SDL_image.h>
 #include <stdio.h>
 #include <string>
 
 #include "ball.h"
+#include "paddle.h"
 
 //Screen dimension constants
 const int SCREEN_WIDTH = 640;
@@ -125,12 +125,17 @@ int main( int argc, char* args[] )
 			//Event handler
 			SDL_Event e;
 
-			//The ball that will be moving around on the screen
+			// Create the game objects:
+			// The ball that will be moving around on the screen
+			// The paddle will move up and down on given X-Pos
 			Ball ball(SCREEN_WIDTH,SCREEN_HEIGHT);
+			Paddle paddleLeft(SCREEN_WIDTH,SCREEN_HEIGHT, 30);
+			Paddle paddleRight(SCREEN_WIDTH,SCREEN_HEIGHT, SCREEN_WIDTH - Paddle::PADDLE_WIDTH - 30);
 
 			//While application is running
 			while( !quit )
 			{
+				// TODO: move this to a controller class
 				//Handle events on queue
 				while( SDL_PollEvent( &e ) != 0 )
 				{
@@ -142,17 +147,31 @@ int main( int argc, char* args[] )
 
 					//Handle input for the ball
 					ball.handleEvent( e );
+					paddleLeft.handleEvent(e); 
+					paddleRight.handleEvent(e); 
 				}
 
+				// TODO: move this to a Game/Logic/Calculation class
 				//Move the ball
 				ball.move();
+				paddleLeft.move();
+				paddleRight.move();
+				// Check collisions
+				// Update scores
+				// Manage game events: e.g. increase difficulty level/ball speed.
+				// ...
 
+
+				// TODO: move this to a Render class
 				//Clear screen
 				SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
 				SDL_RenderClear( gRenderer );
 
 				//Render objects
 				ball.render(gRenderer);
+				paddleLeft.render(gRenderer);
+				paddleRight.render(gRenderer);
+				//TODO: render scores.
 
 				//Update screen
 				SDL_RenderPresent( gRenderer );

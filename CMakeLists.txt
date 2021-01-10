@@ -22,7 +22,7 @@ include_directories(${SDL2_INCLUDE_DIRS} src)
 #include_directories(${SDL2_IMAGE_INCLUDE_DIRS})
 # NOTE: REMEMBER to add element to target_link_libraries: ${SDL2_IMAGE_LIBRARIES}
 
-add_executable(PongGame src/main.cpp src/ball.cpp)
+add_executable(PongGame src/main.cpp src/ball.cpp src/paddle.cpp)
 
 # NOTE: from CppND-Capstone-Snake-Game Repo (still not necessary)
 # add_executable(SnakeGame src/main.cpp src/game.cpp src/controller.cpp src/renderer.cpp src/snake.cpp)
