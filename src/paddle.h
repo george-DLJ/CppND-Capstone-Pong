@@ -10,7 +10,7 @@ class Paddle
     static const int PADDLE_HEIGHT = 60;
 
     //Max axis velocity
-    static const int PADDLE_VEL = 1; //
+    static const int PADDLE_VEL = 2; //
 
     //Constructor
     Paddle(const int screenWidth, const int screenHeight, const int xPos);

@@ -5,16 +5,9 @@
 /**
  * 
  * */
-Ball::Ball(const int screenWidth, const int screenHeight):mScreenWidth(screenWidth),mScreenHeight(screenHeight),mPosX(0),mPosY(0), mVelX(0), mVelY(0)
-{
-    //Initialize pos offsets
-    //mPosX = 0; //already initialized in list
-    //mPosY = 0; //already initialized in list
+Ball::Ball(const int screenWidth, const int screenHeight):mScreenWidth(screenWidth),mScreenHeight(screenHeight),mPosX(0),mPosY(0), mVelX(BALL_VEL), mVelY(BALL_VEL)
+{}
 
-    //init vel
-    //mVelX = 0; //already initialized in list
-    //mVelY = 0; //already initialized in list
-}
 
 /**
  * TODO: implement a custom eventqeueue to handle moveEvents 
@@ -24,6 +17,7 @@ Ball::Ball(const int screenWidth, const int screenHeight):mScreenWidth(screenWid
  * TODO: move this method to controls class. This method should be on 
  *       the Ball class.
  */ 
+/*
 void Ball::handleEvent( SDL_Event& e)
 {
     //If a key was pressed
@@ -63,6 +57,7 @@ void Ball::handleEvent( SDL_Event& e)
         }
     } 
 }
+*/
 
 void Ball::move()
 {
@@ -72,8 +67,11 @@ void Ball::move()
     // If it is outside boundaries move back
     if((mPosX < 0) || (mPosX + BALL_WIDTH > mScreenWidth ))
     {
-        //Move back
+        //1. Move back to screen
         mPosX -= mVelX;
+        //2. Reverse speed on that axis:
+        mVelX *= -1;
+
     }
 
     //Move ball on x axis (up or down):
@@ -84,6 +82,8 @@ void Ball::move()
     {
         //Move back
         mPosY -= mVelY;
+        //2. Reverse speed on that axis:
+        mVelY *= -1;
     }
 }
 

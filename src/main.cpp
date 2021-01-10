@@ -146,7 +146,7 @@ int main( int argc, char* args[] )
 					}
 
 					//Handle input for the ball
-					ball.handleEvent( e );
+					//ball.handleEvent( e ); //removed events; ball is on  its own now!
 					paddleLeft.handleEvent(e); 
 					paddleRight.handleEvent(e); 
 				}
