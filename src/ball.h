@@ -1,35 +1,35 @@
-#ifndef DOT_H_
-#define DOT_H_
+#ifndef BALL_H_
+#define BALL_H_
 
 #include <SDL.h>
 
-class Dot
+class Ball
 {
     public:
     //dimensions
-    static const int DOT_WIDTH = 20;
-    static const int DOT_HEIGHT = 20;
+    static const int BALL_WIDTH = 20;
+    static const int BALL_HEIGHT = 20;
 
     //Max axis velocity
-    static const int DOT_VEL = 1; //
+    static const int BALL_VEL = 1; //
 
     //Constructor
-    Dot(const int screenWidth, const int screenHeight);
+    Ball(const int screenWidth, const int screenHeight);
 
     //Take key presses and adjust velocity
     void handleEvent( SDL_Event& e );
 
-    //Move Dot
+    //Move Ball
     void move();
 
-    //Show dot on screen:
+    //Show ball on screen:
     void render(SDL_Renderer* sdl_renderer);
 
     private:
-    //The X and Y offsets of the dot
+    //The X and Y offsets of the ball
     int mPosX, mPosY;
 
-    //The vel of the dot
+    //The vel of the ball
     int mVelX, mVelY;
 
     // Screen width and height
@@ -37,4 +37,4 @@ class Dot
 
 };
 
-#endif /* DOT_H_ */
+#endif /* BALL_H_ */
