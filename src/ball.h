@@ -17,48 +17,46 @@ class Ball
             level2 = 2,
             level3 = 3,
         };
-    //dimensions
-    static const int BALL_WIDTH = 20;
-    static const int BALL_HEIGHT = 20;
+        //dimensions
+        static const int BALL_DIAMETER = 20;
 
-    //Max axis velocity
-    static const int BALL_VEL = 1; //
+        //Max axis velocity
+        static const int BALL_VEL = 1; //
 
-    //Constructor
-    Ball(const int screenWidth, const int screenHeight);
+        //Constructor
+        Ball(const int screenWidth, const int screenHeight);
 
-    //Take key presses and adjust velocity
-    void handleEvent( SDL_Event& e );
+        //Take key presses and adjust velocity
+        void handleEvent( SDL_Event& e );
 
-    //Move Ball
-    void move();
+        //Move Ball
+        void move();
 
-    //Show ball on screen:
-    void render(SDL_Renderer* sdl_renderer);
+        //Show ball on screen:
+        void render(SDL_Renderer* sdl_renderer);
 
-    // return collision box
-    SDL_Rect getCollider();
+        // return collision box
+        const SDL_Rect& getCollider() const;
 
-    // Events that affect the ball
-    void Rebound(CollisionSide side);
+        // Events that affect the ball
+        void Rebound(CollisionSide side);
 
-    void changeSpeed(int speedModule);
+        void changeSpeed(int speedModule);
 
-    void changeDirections(bool axisX, bool axisY);
-
+        void changeDirections(bool axisX, bool axisY);
 
     private:
-    //The X and Y offsets of the ball
-    int mPosX, mPosY;
+        //The X and Y offsets of the ball
+        int mPosX, mPosY;
 
-    //The vel of the ball
-    int mVelX, mVelY;
+        //The vel of the ball
+        int mVelX, mVelY;
 
-    // Screen width and height
-    int mScreenWidth, mScreenHeight;
+        // Screen width and height
+        int mScreenWidth, mScreenHeight;
 
-    // Ball's collison box
-    SDL_Rect mCollider;
+        // Ball's collison box
+        SDL_Rect collider_;
 
 };
 

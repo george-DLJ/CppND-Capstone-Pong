@@ -8,7 +8,13 @@
  * 
  * */
 Ball::Ball(const int screenWidth, const int screenHeight):mScreenWidth(screenWidth),mScreenHeight(screenHeight),mPosX(screenWidth/2),mPosY(0), mVelX(BALL_VEL), mVelY(BALL_VEL)
-{}
+{
+    // initialize collider:
+    collider_.w = BALL_DIAMETER;
+    collider_.h = BALL_DIAMETER;
+    collider_.x = mPosX;
+    collider_.y = mPosY;
+}
 
 
 /**
@@ -26,7 +32,7 @@ void Ball::move()
     mPosX += mVelX;
 
     // If it is outside boundaries move back
-    if((mPosX < 0) || (mPosX + BALL_WIDTH > mScreenWidth ))
+    if((mPosX < 0) || (mPosX + BALL_DIAMETER > mScreenWidth ))
     {
         //1. Move back to screen
         mPosX -= mVelX;
@@ -39,13 +45,18 @@ void Ball::move()
     mPosY += mVelY;
 
     // If it is outside boundaries move back
-    if((mPosY < 0) || (mPosY + BALL_HEIGHT > mScreenHeight ))
+    if((mPosY < 0) || (mPosY + BALL_DIAMETER > mScreenHeight ))
     {
         //Move back
         mPosY -= mVelY;
         //2. Reverse speed on that axis:
         mVelY *= -1;
     }
+
+    // update collider pos
+    collider_.x = mPosX;
+    collider_.y = mPosY;
+    
 }
 
 /**
@@ -59,19 +70,20 @@ void Ball::render(SDL_Renderer* sdl_renderer)
     //Show the ball
 
     SDL_Rect block;
-    block.w = BALL_WIDTH;
-    block.h = BALL_HEIGHT;
+    block.w = BALL_DIAMETER;
+    block.h = BALL_DIAMETER;
 
     SDL_SetRenderDrawColor(sdl_renderer, 0xFF, 0xCC, 0x00, 0xFF);
     
+    // Positon of the top left corner of the ball.
     block.x = mPosX ;
     block.y = mPosY ;
     SDL_RenderFillRect(sdl_renderer, &block);
 }
 
-SDL_Rect Ball::getCollider()
+const SDL_Rect& Ball::getCollider() const
 {
-    return mCollider;
+    return collider_;
 }
 
 /**
@@ -128,7 +140,6 @@ void Ball::changeDirections(bool axisX, bool axisY)
         mVelY *= -1;
     }
 }
-
 
 
 

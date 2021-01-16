@@ -5,8 +5,8 @@
 Game::Game(int fieldWidth, int fieldHeight)
     : field_(fieldWidth, fieldHeight),
       ball_(fieldWidth, fieldHeight),
-      paddle_left_(0, fieldHeight, 10),
-      paddle_right_(0, fieldHeight, fieldWidth - 10),
+      paddle_left_(0, fieldHeight, 20),
+      paddle_right_(0, fieldHeight, fieldWidth - 20),
       score_{0,0},
       volleys_(0) {
 }
@@ -21,7 +21,7 @@ void Game::Run(const Controller &controller, Renderer &renderer) // First approa
 //  int frame_count = 0;
   
   bool running = true;
-  
+
     // Game loop:
     while (running) //playing, playingPoint
     {
@@ -86,9 +86,16 @@ void Game::CheckFieldCollisions(Ball &ball, const Field &field)
 
 void Game::CheckPaddleCollision(Ball &ball, Paddle &paddle)
 {
-  // if collission -->
+  if (CheckCollision(ball.getCollider(), paddle.getCollider()))
+  {
+    // rebound ball
+    ball.Rebound(Ball::CollisionSide::left);
+
+    // increase volleys count
+    ++volleys_;
+  }
   // 
-  // ++volleys;
+  // 
   // 
 }
 
@@ -101,3 +108,51 @@ void Game::CheckPaddleCollision(Ball &ball, Paddle &paddle)
 //  1. increase ball speed: set to SPEED_LEVEL_3
 //  2. increase Paddles angles (set to ANGLE_LEVEL_3...)
  
+// Based on lazyfoo tutorial collision method.
+// Alternative: use SDL_IntersectRect() 
+// TODO: refactor names 
+// TODO: reimplement using SDL_intersect-
+bool Game::CheckCollision(const SDL_Rect &a, const SDL_Rect &b)
+{
+  //The sides of the rectangles
+    int leftA, leftB;
+    int rightA, rightB;
+    int topA, topB;
+    int bottomA, bottomB;
+
+    //Calculate the sides of rect A
+    leftA = a.x;
+    rightA = a.x + a.w;
+    topA = a.y;
+    bottomA = a.y + a.h;
+
+    //Calculate the sides of rect B
+    leftB = b.x;
+    rightB = b.x + b.w;
+    topB = b.y;
+    bottomB = b.y + b.h;
+    //Here is where the collision detection happens. This code calculates the top/bottom and left/right of each of the collison boxes.
+    //If any of the sides from A are outside of B
+    if( bottomA <= topB )
+    {
+        return false;
+    }
+
+    if( topA >= bottomB )
+    {
+        return false;
+    }
+
+    if( rightA <= leftB )
+    {
+        return false;
+    }
+
+    if( leftA >= rightB )
+    {
+        return false;
+    }
+
+    //If none of the sides from A are outside B
+    return true;
+}
