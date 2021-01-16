@@ -2,10 +2,12 @@
 
 #include "ball.h"
 
+
+
 /**
  * 
  * */
-Ball::Ball(const int screenWidth, const int screenHeight):mScreenWidth(screenWidth),mScreenHeight(screenHeight),mPosX(0),mPosY(0), mVelX(BALL_VEL), mVelY(BALL_VEL)
+Ball::Ball(const int screenWidth, const int screenHeight):mScreenWidth(screenWidth),mScreenHeight(screenHeight),mPosX(screenWidth/2),mPosY(0), mVelX(BALL_VEL), mVelY(BALL_VEL)
 {}
 
 
@@ -17,47 +19,6 @@ Ball::Ball(const int screenWidth, const int screenHeight):mScreenWidth(screenWid
  * TODO: move this method to controls class. This method should be on 
  *       the Ball class.
  */ 
-/*
-void Ball::handleEvent( SDL_Event& e)
-{
-    //If a key was pressed
-    if( e.type == SDL_KEYDOWN && e.key.repeat == 0)
-    {
-        //Adjust the velocity
-        switch( e.key.keysym.sym)
-        {
-            case SDLK_UP: 
-                mVelY -= BALL_VEL;
-            break;
-            case SDLK_DOWN: 
-                mVelY += BALL_VEL;
-            break;
-            case SDLK_LEFT: 
-                mVelX -= BALL_VEL;
-            break;
-            case SDLK_RIGHT: 
-                mVelX += BALL_VEL;
-            break;
-
-        }
-    }
-    //If a key was released: 
-    // When we release a key, we have to undo the velocity change when first pressed it. 
-    // e.g. when we pressed right key, we added to the x velocity; so now when we release 
-    // the right key here, we subtract from the x velocity to return it to 0.
-    else if( e.type == SDL_KEYUP && e.key.repeat == 0 )
-    {
-        //Adjust the velocity
-        switch( e.key.keysym.sym )
-        {
-            case SDLK_UP: mVelY += BALL_VEL; break;
-            case SDLK_DOWN: mVelY -= BALL_VEL; break;
-            case SDLK_LEFT: mVelX += BALL_VEL; break;
-            case SDLK_RIGHT: mVelX -= BALL_VEL; break;
-        }
-    } 
-}
-*/
 
 void Ball::move()
 {
@@ -107,4 +68,67 @@ void Ball::render(SDL_Renderer* sdl_renderer)
     block.y = mPosY ;
     SDL_RenderFillRect(sdl_renderer, &block);
 }
+
+SDL_Rect Ball::getCollider()
+{
+    return mCollider;
+}
+
+/**
+ *  NOTE: consider move this logic to the game controller.
+ */
+void Ball::Rebound(CollisionSide side)
+{
+    switch(side)
+    {
+        case CollisionSide::right:
+        case CollisionSide::left:
+            mVelX *= -1;
+            break; 
+        case CollisionSide::top:
+        case CollisionSide::bottom:
+            mVelY *= -1;
+            break; 
+
+    }
+}
+
+/**
+ * Sets the ball speed modulus. 
+ * NOTICE: 1st approach: both directions speeds are always equal.
+ *         this implies the ball always moves in 45 deg angles. 
+ * Simplification: get ball directions and replace each axis module with the new given.
+ * Real calculation will require change speeds to floats.
+ * Then use vector normalization.
+ */ 
+void Ball::changeSpeed(int speedModule)
+{
+    if (speedModule > 0 )
+    {
+        mVelX = mVelX < 0 ?  -speedModule : speedModule;
+        mVelY = mVelY < 0 ?  -speedModule : speedModule;
+    }
+    
+}
+
+/**
+ * reverses one or both directions of the ball:
+ * Case 1- in case of a side rebound the ball changes the x axis only
+ * case 2- in case the ball touches top or bottom side of paddle, 
+ * then an unrealistic rebouond changing both axis is necessary.
+ */
+void Ball::changeDirections(bool axisX, bool axisY)
+{
+    if(axisX)
+    {
+        mVelX *= -1;
+    }
+    if(axisY)
+    {
+        mVelY *= -1;
+    }
+}
+
+
+
 

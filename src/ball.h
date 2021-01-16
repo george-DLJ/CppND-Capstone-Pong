@@ -6,6 +6,17 @@
 class Ball
 {
     public:
+       enum class CollisionSide{
+            left,
+            right,
+            top,
+            bottom,
+        };
+        enum class SpeedLevel{
+            level1 = 1,
+            level2 = 2,
+            level3 = 3,
+        };
     //dimensions
     static const int BALL_WIDTH = 20;
     static const int BALL_HEIGHT = 20;
@@ -25,6 +36,17 @@ class Ball
     //Show ball on screen:
     void render(SDL_Renderer* sdl_renderer);
 
+    // return collision box
+    SDL_Rect getCollider();
+
+    // Events that affect the ball
+    void Rebound(CollisionSide side);
+
+    void changeSpeed(int speedModule);
+
+    void changeDirections(bool axisX, bool axisY);
+
+
     private:
     //The X and Y offsets of the ball
     int mPosX, mPosY;
@@ -34,6 +56,9 @@ class Ball
 
     // Screen width and height
     int mScreenWidth, mScreenHeight;
+
+    // Ball's collison box
+    SDL_Rect mCollider;
 
 };
 
