@@ -1,130 +1,211 @@
 #include <iostream>
-#include <SDL.h>
-#include <SDL2/SDL_image.h> //Required to open png images!
+//#include <SDL.h>
+//#include <stdio.h>
+//#include <string>
 
-//Screen dimension constants
-const int SCREEN_WIDTH = 640;
-const int SCREEN_HEIGHT = 480;
+#include "controller.h"
+#include "game.h"
+#include "renderer.h"
 
-/**
- *  lazyfoo.net tutorial - Lesosn 2: show an image on the window.
- *  add some modularity by creating following methiods: 
- *  - bool init() --> initializes the SDL window
- *  - bool loadMedia() --> loads a picture
- *  - void close() --> frees media an closes
- *  NOTE: While in Delay keyboard input cannot be accepted.
- *  NOTE: to use PNG images, the SDL_image library must be installed:
- *        see: https://gamedev.stackexchange.com/a/135894
- * */
-//
-//Starts up SDL and creates window
-bool init();
+// //Screen dimension constants
+// const int SCREEN_WIDTH = 640;
+// const int SCREEN_HEIGHT = 480;
+
+// //Starts up SDL and creates window
+// bool init();
 
 //Loads media
 bool loadMedia();
 
-//Frees media and shuts down SDL
-void close();
+// //Frees media and shuts down SDL
+// void close();
 
-//private:
-//The window we'll be rendering to
-SDL_Window* gWindow = NULL;
-    
-//The surface contained by the window
-SDL_Surface* gScreenSurface = NULL;
+// //The window we'll be rendering to
+// SDL_Window* gWindow = NULL;
 
-//The image we will load and show on the screen
-SDL_Surface* gHelloWorld = NULL;
+// //The window renderer
+// SDL_Renderer* gRenderer = NULL;
 
-bool init()
-{
-    //Initialization flag
-    bool success = true;
+//DELETE; moved to renderer class constructor
+// bool init()
+// {
+// 	//Initialization flag
+// 	bool success = true;
 
-    //Initialize SDL
-    if( SDL_Init( SDL_INIT_VIDEO ) < 0 )
-    {
-        std::cout << "SDAL could not initialize! SDL_Error:" << SDL_GetError << "\n";
-        success = false;
-    }
-    else
-    {
-        //Create window
-        gWindow = SDL_CreateWindow( "SDL Tutorial 2", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN );
-        if( gWindow == NULL )
-        {
-            std::cout << "Window could not be created! SDL_Error: " << SDL_GetError() << "\n";
-            success = false;
-        }
-        else
-        {
-            //Get window surface
-            gScreenSurface = SDL_GetWindowSurface( gWindow );
-        }
-    }
-    return success;
-}
+	
+// 	//Initialize SDL
+	
+// 	if( SDL_Init( SDL_INIT_VIDEO ) < 0 )
+// 	{
+// 		printf( "SDL could not initialize! SDL Error: %s\n", SDL_GetError() );
+// 		success = false;
+// 	}
+// 	else
+// 	{
+// 		//Set texture filtering to linear
+// 		if( !SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, "1" ) )
+// 		{
+// 			printf( "Warning: Linear texture filtering not enabled!" );
+// 		}
 
+// 		//Create window
+// 		gWindow = SDL_CreateWindow( "SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN );
+// 		if( gWindow == NULL )
+// 		{
+// 			printf( "Window could not be created! SDL Error: %s\n", SDL_GetError() );
+// 			success = false;
+// 		}
+// 		else
+// 		{
+// 			//Create vsynced renderer for window
+// 			gRenderer = SDL_CreateRenderer( gWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC );
+// 			if( gRenderer == NULL )
+// 			{
+// 				printf( "Renderer could not be created! SDL Error: %s\n", SDL_GetError() );
+// 				success = false;
+// 			}
+// 			else
+// 			{
+// 				//Initialize renderer color
+// 				SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
+
+// 				// //Initialize PNG loading
+// 				// int imgFlags = IMG_INIT_PNG;
+// 				// if( !( IMG_Init( imgFlags ) & imgFlags ) )
+// 				// {
+// 				// 	printf( "SDL_image could not initialize! SDL_image Error: %s\n", IMG_GetError() );
+// 				// 	success = false;
+// 				// }
+// 			}
+// 		}
+// 	}
+
+// 	return success;
+// }
+
+
+/**
+ * use only with SDL_Image library
+ */ 
 bool loadMedia()
 {
-    //Loading success flag
-    bool success = true;
+	//Loading success flag
+	bool success = true;
 
-    //Load splash image
-    //gHelloWorld = SDL_LoadBMP( "hello_world.bmp" );
-    gHelloWorld = IMG_Load( "hello_world.png" ); //TODO: configure Library on CMAKE
-    if( gHelloWorld == NULL )
-    {
-        printf( "Unable to load image %s! SDL Error: %s\n", "02_getting_an_image_on_the_screen/hello_world.bmp", SDL_GetError() );
-        success = false;
-    }
-
-    return success;
+	return success;
 }
 
-void close()
-{
-    //Deallocate surface
-    SDL_FreeSurface( gHelloWorld );
-    gHelloWorld = NULL;
+/**
+ * DELETE! moved to renderer class destructor
+ * 
+ */
+// void close()
+// {
+// 	//Destroy window	
+// 	SDL_DestroyRenderer( gRenderer );
+// 	SDL_DestroyWindow( gWindow );
+// 	gWindow = NULL;
+// 	gRenderer = NULL;
 
-    //Destroy window
-    SDL_DestroyWindow( gWindow );
-    gWindow = NULL;
+// 	//Quit SDL subsystems
+// 	//IMG_Quit(); //requires SDL_Image extension
+// 	SDL_Quit();
+// }
 
-    //Quit SDL subsystems
-    SDL_Quit();
-}
 
-int main() {
-    std::cout << "Hello Pong! - Lazyfoo lesson 2" << "\n";
-    
 
-    // Initialize SDL
-    if(!init() )
-    {
-        std::cout << "Failed to initialize" << "\n";
-    }
-    else
-    {
-        // Load Media:
-        if(!loadMedia() ) {
-            std::cout << "Failed to load media! ... filling with white surface instead..." << "\n";
+// int main( int argc, char* args[] )
+// {
+	// //Start up SDL and create window
+	// if( !init() )
+	// {
+	// 	printf( "Failed to initialize!\n" );
+	// }
+	// else
+	// {
+	// 	//Load media
+	// 	if( !loadMedia() )
+	// 	{
+	// 		printf( "Failed to load media!\n" );
+	// 	}
+	// 	else
+	// 	{	
+	// 		//Main loop flag
+	// 		bool quit = false;
 
-            //Load empty Window and Fill the surface white
-            SDL_FillRect( gScreenSurface, NULL, SDL_MapRGB( gScreenSurface->format, 0xFF, 0xFF, 0xFF ) );
-        }
-        else
-        {
-            //Apply the image
-            SDL_BlitSurface( gHelloWorld, NULL, gScreenSurface, NULL );
-        }
-        
-        //Update the surface
-        SDL_UpdateWindowSurface( gWindow );
+			// //Event handler
+			// SDL_Event e;
 
-        //Wait two seconds
-        SDL_Delay( 2000 );
-    }
-    return 0;
+			// // Create the game objects:
+			// // The ball that will be moving around on the screen
+			// // The paddle will move up and down on given X-Pos
+			// Ball ball(SCREEN_WIDTH,SCREEN_HEIGHT);
+			// Paddle paddleLeft(SCREEN_WIDTH,SCREEN_HEIGHT, 30);
+			// Paddle paddleRight(SCREEN_WIDTH,SCREEN_HEIGHT, SCREEN_WIDTH - Paddle::PADDLE_WIDTH - 30);
+
+			// // While application is running
+			// while( !quit )
+			// {
+				// // 1. Handle User Input
+				// // TODO: move this to a controller class
+				// //Handle events on queue
+				// while( SDL_PollEvent( &e ) != 0 )
+				// {
+				// 	//User requests quit
+				// 	if( e.type == SDL_QUIT )
+				// 	{
+				// 		quit = true;
+				// 	}
+
+				// 	//Handle input for the ball
+				// 	ball.handleEvent( e ); //removed events; ball is on  its own now!
+				// 	paddleLeft.handleEvent(e); 
+				// 	paddleRight.handleEvent(e); 
+				// }
+
+				// // 2. Update game state	
+				// // DONE: move this to a Game.Update class
+				// //Move the ball
+				// ball.move();
+				// paddleLeft.move();
+				// paddleRight.move();
+				// // Check collisions
+				// // Update scores
+				// // Manage game events: e.g. increase difficulty level/ball speed.
+				// // ...
+
+
+				// // DONE: moved this to  Renderer.Render() class
+				// //Clear screen
+				// SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
+				// SDL_RenderClear( gRenderer );
+				// //Render objects
+				// ball.render(gRenderer);
+				// paddleLeft.render(gRenderer);
+				// paddleRight.render(gRenderer);
+				// //TODO: render scores.
+				// //Update screen
+				// SDL_RenderPresent( gRenderer );
+	// 		}
+	// 	}
+	// }
+
+	// //Free resources and close SDL
+	// close();
+
+	// return 0;
+//}
+
+int main(){
+	constexpr std::size_t kScreenWidth{640}; //size_t: is a template for unsigned value; using size_t we let the compiler optimize the type (int, long, etc.).
+	constexpr std::size_t kScreenHeight{480};
+
+	Renderer renderer(kScreenWidth, kScreenHeight);
+	Controller controller;
+	Game game(kScreenWidth, kScreenHeight);
+	game.Run(controller, renderer); //TODO: expand, add kMsPerFrame;
+	std::cout << "Exiting Pong! " << "\n";
+	Score score = game.GetScore();
+	std::cout << "Score: " << score.playerLeft << " : " << score.playerRight  << "\n";
+	return 0;
 }
