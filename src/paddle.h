@@ -17,13 +17,12 @@ class Paddle
     static const int PADDLE_HEIGHT = 100;
 
     //Max axis velocity
-    static const int PADDLE_VEL = 2; //
+    static const int PADDLE_VEL = 4; //speed: PADDLE_VEL (px) * FPS --> px/sec; currently: 4 px * 60 fps = 120 px/s
 
     //Constructor
     Paddle(const int min_y_pos, const int max_y_pos, const int paddle_center_x);
 
     //Take key presses and adjust velocity
-    void handleEvent( SDL_Event& e ); //TODO: remove
     void startMovement(Direction direction);
     void stopMovement(Direction direction);
 
