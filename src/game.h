@@ -26,33 +26,35 @@ struct Field
 class Game
 {
     public:
-    enum class Players{
-        playerLeft,
-        playerRight
-    };
-    Game(int field_width, int fiedl_height);
-    void Run(const Controller  &controller, Renderer &renderer); //Controller const &controller, Renderer &renderer, std::size_t target_frame_duration
+        enum class Players{
+            playerLeft,
+            playerRight
+        };
+        Game(int field_width, int fiedl_height);
+        void Run(const Controller  &controller, Renderer &renderer); //Controller const &controller, Renderer &renderer, std::size_t target_frame_duration
 
-    Score GetScore() const;
+        Score GetScore() const;
 
     private: 
-    void Update();
-    void CheckFieldCollisions(Ball &ball, const Field &field);
-  
-    void CheckPaddleCollision(Ball &ball, Paddle &paddle);
+        void Update();
+        void CheckFieldCollisions(Ball &ball, const Field &field);
+    
+        void CheckPaddleCollision(Ball &ball, Paddle &paddle);
 
-    // check collisions between two colliders. 
-    // alternative: use SDL_IntersectRect()
-    bool CheckCollision(const SDL_Rect &a, const SDL_Rect &b); 
+        // check collisions between two colliders. 
+        // alternative: use SDL_IntersectRect()
+        bool CheckCollision(const SDL_Rect &a, const SDL_Rect &b); 
 
-    void ServiceNewBall();
+        void ServiceNewBall();
 
-    Field field_;
-    Ball ball_;
-    Paddle paddle_left_;
-    Paddle paddle_right_;
-    Score score_;
-    int volleys_; //current point volleys (use to control ball speed and paddle angles.)
+        Field field_;
+        Ball ball_;
+        Paddle paddle_left_;
+        Paddle paddle_right_;
+        Score score_;
+        int volleys_; //current point volleys (use to control ball speed and paddle angles.)
+
+        constexpr  static float kTargetFrameDuration = 1000.0 / 60.0; //milliseconds per frame at 60 frames per second
 
 
 };

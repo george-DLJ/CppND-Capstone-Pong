@@ -83,6 +83,11 @@ Renderer::Renderer(const std::size_t screen_width,
 		SDL_RenderPresent( sdl_renderer_ );
     }
 
-    //TODO: Optional update window title
-    //void Renderer::UpdateWindowTitle(){}
+    /**
+     * update window title with score and framerate information.
+     */ 
+    void Renderer::UpdateWindowTitle(int score_left, int score_right, int fps){
+        std::string title{"Score: " + std::to_string(score_left) + " : " + std::to_string(score_right) + " FPS: " + std::to_string(fps)};
+        SDL_SetWindowTitle(sdl_window_, title.c_str());
+    }
 
