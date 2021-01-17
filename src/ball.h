@@ -2,8 +2,9 @@
 #define BALL_H_
 
 #include <SDL.h>
+#include "IRenderable.h"
 
-class Ball
+class Ball : public IRenderable
 {
     public:
        enum class CollisionSide{
@@ -26,7 +27,7 @@ class Ball
         static const int BALL_DIAMETER = 20;
 
         //Max axis velocity
-        static const int BALL_VEL = 1; //
+        static const int BALL_VEL = 3; //
 
         //Constructor
         Ball(const int screenWidth, const int screenHeight);

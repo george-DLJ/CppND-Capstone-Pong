@@ -8,7 +8,10 @@ Game::Game(int fieldWidth, int fieldHeight)
       paddle_left_(0, fieldHeight, 20),
       paddle_right_(0, fieldHeight, fieldWidth - 20),
       score_{0,0},
-      volleys_(0) {
+      volleys_(0)
+      {
+
+        
 }
 
 //void Game::Run(Controller const &controller, Renderer &renderer,               std::size_t target_frame_duration)
@@ -23,6 +26,17 @@ void Game::Run(const Controller &controller, Renderer &renderer) // First approa
   Uint32 title_timestamp = SDL_GetTicks();
   int frame_count = 0;
   
+  // //TODO: optimize rendering (FAILS) (Plan C)
+  // renderer.AddRenderableElement(std::make_shared<Ball>(ball_));
+  // renderer.AddRenderableElement(std::make_shared<Paddle>(paddle_left_));
+  // renderer.AddRenderableElement(std::make_shared<Paddle>(paddle_right_));
+
+  std::vector<IRenderable*> renderables;
+  renderables.push_back(&ball_);
+  renderables.push_back(&paddle_left_);
+  renderables.push_back(&paddle_right_);
+
+
   bool running = true;
 
     // Game loop:
@@ -36,7 +50,9 @@ void Game::Run(const Controller &controller, Renderer &renderer) // First approa
     Update();
     // 3. Render:
     // TODO: render once every x milliseconds.
-    renderer.Render(ball_, paddle_left_, paddle_right_);
+    //renderer.Render(ball_, paddle_left_, paddle_right_); //Plan A: not so good idea, requires refactor renderer class by each new renderable element on game.
+    renderer.Render(renderables); //Alternative (Plan B): change input parameter for a vector of IRenderable;
+    //renderer.Render(); //TODO: fix: it doesn't work! does not update the positions. (Plan C)
 
     frame_end = SDL_GetTicks();
 

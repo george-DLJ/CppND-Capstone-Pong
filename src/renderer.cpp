@@ -64,23 +64,73 @@ Renderer::Renderer(const std::size_t screen_width,
 	    SDL_Quit();
     }
 
-/** 
- * TODO: implement generics or interface for multiple componenten?
- * 
- */ 
-    void Renderer::Render(Ball &ball,  Paddle &paddleLeft,  Paddle &paddleRight)
+    // /** 
+    //  * Plan A:  First approach of the class passing the elements to render each time.
+    //  * ineficient and difficult to maintain, as it requires change this class
+    //  * everytime the game has new elements. 
+    //  * 
+    //  * improvement: PlanB and  PlanC
+    //  * 
+    //  * TODO: improve using an interface; see plan B
+    //  * 
+    //  */ 
+    // void Renderer::Render(Ball &ball,  Paddle &paddleLeft,  Paddle &paddleRight)
+    // {
+    //     // 1. Clear screen
+	// 	SDL_SetRenderDrawColor( sdl_renderer_, 0xFF, 0xFF, 0xFF, 0xFF );
+	// 	SDL_RenderClear( sdl_renderer_ );
+    //     // 2. Render objects
+    //     ball.render(sdl_renderer_);
+	// 	paddleLeft.render(sdl_renderer_);
+	// 	paddleRight.render(sdl_renderer_);
+    //     //TODO: 2.2 render scores.
+
+    //     // 3. Update screen
+	// 	SDL_RenderPresent( sdl_renderer_ );
+    // }
+
+    /**
+     * Plan B: Added an Interface for all renderable elements, allows us to have 
+     * a vector of references to those objects.
+     * Now is this class decoupled from game objects.
+     * PROBLEM: it uses raw pointers, and that can be problematic!
+     */
+    void Renderer::Render(std::vector<IRenderable*> elements)
     {
         // 1. Clear screen
 		SDL_SetRenderDrawColor( sdl_renderer_, 0xFF, 0xFF, 0xFF, 0xFF );
 		SDL_RenderClear( sdl_renderer_ );
         // 2. Render objects
-        ball.render(sdl_renderer_);
-		paddleLeft.render(sdl_renderer_);
-		paddleRight.render(sdl_renderer_);
-        //TODO: 2.2 render scores.
-
+        for(auto e : elements){
+            e->render(sdl_renderer_);
+        }
         // 3. Update screen
 		SDL_RenderPresent( sdl_renderer_ );
+    }
+
+    /**
+     * TODO: Fix! It fails to update moved elements.
+     * use the IRenderable interface to render all sort of game objects
+     * that implement the interface. In this way we can decouple this class
+     * from ball, paddle, etc.
+     * FAILS!!
+     */
+    void Renderer::Render()
+    {
+        // 1. Clear screen
+		SDL_SetRenderDrawColor( sdl_renderer_, 0xFF, 0xFF, 0xFF, 0xFF );
+		SDL_RenderClear( sdl_renderer_ );
+        // 2. Render objects
+        for(auto r : renderable_elements_){
+            r->render(sdl_renderer_);
+        }
+        // 3. Update screen
+		SDL_RenderPresent( sdl_renderer_ );
+    }
+
+    void Renderer::AddRenderableElement(std::shared_ptr<IRenderable> element)
+    {
+        renderable_elements_.push_back(element);
     }
 
     /**
@@ -90,4 +140,5 @@ Renderer::Renderer(const std::size_t screen_width,
         std::string title{"Score: " + std::to_string(score_left) + " : " + std::to_string(score_right) + " FPS: " + std::to_string(fps)};
         SDL_SetWindowTitle(sdl_window_, title.c_str());
     }
+
 
