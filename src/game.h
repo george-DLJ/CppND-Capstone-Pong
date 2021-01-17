@@ -45,6 +45,8 @@ class Game
     // alternative: use SDL_IntersectRect()
     bool CheckCollision(const SDL_Rect &a, const SDL_Rect &b); 
 
+    void ServiceNewBall();
+
     Field field_;
     Ball ball_;
     Paddle paddle_left_;

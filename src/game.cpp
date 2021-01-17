@@ -62,7 +62,7 @@ void Game::Run(const Controller &controller, Renderer &renderer) // First approa
 void Game::Update() {
   // 1. Update movements
   // 1.1 Update Ball
-  ball_.move();  
+  ball_.Move();  
   // 1.2 Update Paddles
   paddle_left_.move();
   paddle_right_.move();  
@@ -81,7 +81,31 @@ Score Game::GetScore() const { return score_; }
 
 void Game::CheckFieldCollisions(Ball &ball, const Field &field)
 {
-  
+  const SDL_Rect &ball_collider = ball.getCollider();
+  // Goal on Left player field
+    if(ball_collider.x < 0) 
+    {
+      // Goal for right player:
+      // 1- update scores
+      // 2- reinit level (volleys, ball speed, paddle angles)
+      ++score_.playerRight;
+      ServiceNewBall();
+
+
+    }
+    else if( ball_collider.x + ball_collider.w > field.width )
+    {
+      // Goal for left player!
+      ++score_.playerLeft;
+      ServiceNewBall();
+
+    }
+    // Rebound on filed top and bottom walls
+    else if(ball_collider.y < 0 || ball_collider.y + ball_collider.h > field.height)
+    {
+      ball_.FieldVerticalRebound(field.height);
+    }
+
 }
 
 void Game::CheckPaddleCollision(Ball &ball, Paddle &paddle)
@@ -155,4 +179,20 @@ bool Game::CheckCollision(const SDL_Rect &a, const SDL_Rect &b)
 
     //If none of the sides from A are outside B
     return true;
+}
+
+/**
+ * Services a new ball and resets game difficulty level
+ * NOTE: this function  is called after a point;
+ * 1- reinit volleys, 
+ * 2- reinit ball speed (done in), 
+ * 3- reinit paddle angles
+ * NOTE: optional add parameter to whom should be the new ball serviced.
+ *       default is serviced to who lost.
+ */
+void Game::ServiceNewBall()
+{
+      volleys_ = 0;
+      //ball_.setSpeed(); TODO
+      ball_.Service(field_.width / 2, field_.height / 2); //sets start position.
 }

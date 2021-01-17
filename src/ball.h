@@ -12,6 +12,11 @@ class Ball
             top,
             bottom,
         };
+        // may replace collisionSide!
+        enum class BounceDirection{
+            kVertical,
+            kHorizontal,
+        };
         enum class SpeedLevel{
             level1 = 1,
             level2 = 2,
@@ -26,11 +31,8 @@ class Ball
         //Constructor
         Ball(const int screenWidth, const int screenHeight);
 
-        //Take key presses and adjust velocity
-        void handleEvent( SDL_Event& e );
-
         //Move Ball
-        void move();
+        void Move();
 
         //Show ball on screen:
         void render(SDL_Renderer* sdl_renderer);
@@ -40,10 +42,15 @@ class Ball
 
         // Events that affect the ball
         void Rebound(CollisionSide side);
+        void FieldVerticalRebound(const int field_height);
+        void FieldRebound(const BounceDirection direction, const int field_width, const int field_height);//const Game::Field fieldSize)
+        void WallRebound(const BounceDirection direction, const int wall_coord);
 
         void changeSpeed(int speedModule);
 
         void changeDirections(bool axisX, bool axisY);
+
+        void Service(const int service_pos_x, const int service_pos_y);
 
     private:
         //The X and Y offsets of the ball
