@@ -1,6 +1,7 @@
 #ifndef GAME_H
 #define GAME_H
 
+#include <vector>
 #include <SDL.h>
 
 #include "controller.h"

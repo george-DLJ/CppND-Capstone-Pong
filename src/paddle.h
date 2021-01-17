@@ -2,8 +2,9 @@
 #define PADDLE_H_
 
 #include <SDL.h>
+#include "IRenderable.h"
 
-class Paddle
+class Paddle : public IRenderable
 {
     public:
     // move directions
