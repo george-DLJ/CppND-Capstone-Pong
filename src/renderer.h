@@ -14,7 +14,7 @@ class Renderer {
 
         void Render(Ball &ball,  Paddle &paddleLeft,  Paddle &paddleRight);
         void UpdateScore(int leftPlayerScore, int rightPlayerScore);
-        //void UpdateWindowTitle(); //optional
+        void UpdateWindowTitle(int score_left, int score_right, int fps); 
       
     private: 
         SDL_Window *sdl_window_; //TODO: use smart_pointers!
