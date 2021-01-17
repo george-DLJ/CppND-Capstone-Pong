@@ -14,7 +14,7 @@ class Paddle
 
     //dimensions
     static const int PADDLE_WIDTH = 20;
-    static const int PADDLE_HEIGHT = 60;
+    static const int PADDLE_HEIGHT = 100;
 
     //Max axis velocity
     static const int PADDLE_VEL = 2; //
@@ -27,11 +27,13 @@ class Paddle
     void startMovement(Direction direction);
     void stopMovement(Direction direction);
 
-    //Move Ball
+    //Move Paddle
     void move();
 
-    //Show ball on screen:
+    //Show Paddle on screen:
     void render(SDL_Renderer* sdl_renderer);
+
+    const SDL_Rect& getCollider() const;
 
     private:
         // compute paddle X position based on width
@@ -48,6 +50,9 @@ class Paddle
 
         //The vel of the paddle
         int vel_y_;
+
+        // collider
+        SDL_Rect collider_;
 };
 
 #endif /* PADDLE_H */

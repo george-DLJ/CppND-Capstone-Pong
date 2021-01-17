@@ -15,6 +15,11 @@ Paddle::Paddle(const int min_y_pos, const int max_y_pos, const int paddle_center
 {
     //TODO: check that xPos is within screenWidth; consider paddel width!
     
+    // initialize collider:
+    collider_.w = PADDLE_WIDTH;
+    collider_.h = PADDLE_HEIGHT;
+    collider_.x = x_pos_;
+    collider_.y = y_pos_;
     
 }
 
@@ -100,6 +105,11 @@ void Paddle::move()
         //Move back
         y_pos_ -= vel_y_;
     }
+    
+    // update collider
+    // NOTE: collider x.pos is fixed on paddle.
+    collider_.y = y_pos_;
+
 }
 
 /**
@@ -121,4 +131,18 @@ void Paddle::render(SDL_Renderer* sdl_renderer)
     block.x = x_pos_ ;
     block.y = y_pos_ ;
     SDL_RenderFillRect(sdl_renderer, &block);
+}
+
+/**
+ * I need to expose the instance collider Rectangle, but not allow callers to 
+ * modify it. 
+ * By making the function const (getCollider const) it is avoided changes on members data.
+ * 
+ * I don't want either copy it each time a collision needs to be calculated.
+ * see: https://stackoverflow.com/a/8005559
+ *      https://stackoverflow.com/a/751783
+ */
+const SDL_Rect& Paddle::getCollider() const
+{
+    return collider_;
 }

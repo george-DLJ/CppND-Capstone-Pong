@@ -41,6 +41,11 @@ class Game
   
     void CheckPaddleCollision(Ball &ball, Paddle &paddle);
 
+    // check collisions between two colliders. 
+    // alternative: use SDL_IntersectRect()
+    bool CheckCollision(const SDL_Rect &a, const SDL_Rect &b); 
+
+    void ServiceNewBall();
 
     Field field_;
     Ball ball_;
