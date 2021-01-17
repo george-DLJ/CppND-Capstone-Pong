@@ -23,49 +23,6 @@ Paddle::Paddle(const int min_y_pos, const int max_y_pos, const int paddle_center
     
 }
 
-/**
- * TODO: implement a custom eventqeueue to handle moveEvents 
- *       independent from input device selected.
- *       in order to use different input device without change BL.
- * 
- * TODO: move this method to controls class. This method should be on 
- *       the Ball class.
- * 
- * Paddle only reacts to Key up/ key down events
- * TODO: add to constructor to which keys should reacht the paddle, e.g. in 
- * dual player game.
- */ 
-void Paddle::handleEvent( SDL_Event& e)
-{
-    //If a key was pressed
-    if( e.type == SDL_KEYDOWN && e.key.repeat == 0)
-    {
-        //Adjust the velocity
-        switch( e.key.keysym.sym)
-        {
-            case SDLK_w: 
-                vel_y_ -= PADDLE_VEL;
-            break;
-            case SDLK_s: 
-                vel_y_ += PADDLE_VEL;
-            break;
-        }
-    }
-    //If a key was released: 
-    // When we release a key, we have to undo the velocity change when first pressed it. 
-    // e.g. when we pressed right key, we added to the x velocity; so now when we release 
-    // the right key here, we subtract from the x velocity to return it to 0.
-    else if( e.type == SDL_KEYUP && e.key.repeat == 0 )
-    {
-        //Adjust the velocity
-        switch( e.key.keysym.sym )
-        {
-            case SDLK_w: vel_y_ += PADDLE_VEL; break;
-            case SDLK_s: vel_y_ -= PADDLE_VEL; break;
-        }
-    } 
-}
-
 void Paddle::startMovement(Paddle::Direction direction)
 {
     switch( direction )
