@@ -2,11 +2,11 @@
 #include <iostream>
 #include "SDL.h"
 
-Game::Game(int fieldWidth, int fieldHeight)
-    : field_(fieldWidth, fieldHeight),
-      ball_(fieldWidth, fieldHeight),
-      paddle_left_(0, fieldHeight, 20),
-      paddle_right_(0, fieldHeight, fieldWidth - 20),
+Game::Game(int field_width, int field_height)
+    : field_(field_width, field_height),
+      ball_(field_width/2, 0), //start position for the ball: middle top of screen
+      paddle_left_(0, field_height, kPaddleDistanceFromSide),
+      paddle_right_(0, field_height, field_width - kPaddleDistanceFromSide),
       score_{0,0},
       volleys_(0)
       {
@@ -108,7 +108,7 @@ void Game::CheckFieldCollisions(Ball &ball, const Field &field)
       // 1- update scores
       // 2- reinit level (volleys, ball speed, paddle angles)
       ++score_.playerRight;
-      ServiceNewBall();
+      ServeNewBall();
 
 
     }
@@ -116,7 +116,7 @@ void Game::CheckFieldCollisions(Ball &ball, const Field &field)
     {
       // Goal for left player!
       ++score_.playerLeft;
-      ServiceNewBall();
+      ServeNewBall();
 
     }
     // Rebound on filed top and bottom walls
@@ -127,6 +127,11 @@ void Game::CheckFieldCollisions(Ball &ball, const Field &field)
 
 }
 
+/**
+ * two approaches have been implemented: 
+ * using own collision function or
+ * use the SDL_intersectRect function.
+ */
 void Game::CheckPaddleCollision(Ball &ball, Paddle &paddle)
 {
   // if (CheckCollision(ball.getCollider(), paddle.getCollider()))
@@ -137,6 +142,7 @@ void Game::CheckPaddleCollision(Ball &ball, Paddle &paddle)
   //   // increase volleys count
   //   ++volleys_;
   // }
+
   // Alternative use SDL Collision function
   if(SDL_HasIntersection(&(ball.getCollider()), &(paddle.getCollider())))
   {
@@ -145,11 +151,11 @@ void Game::CheckPaddleCollision(Ball &ball, Paddle &paddle)
     {
       if(collision_intersection.h > collision_intersection.w)
       {
-        ball.Rebound(Ball::CollisionSide::left_right);
+        ball.Rebound(Ball::BounceDirection::kHorizontal);
       }
       else
       {
-          ball.Rebound(Ball::CollisionSide::top_bottom);
+          ball.Rebound(Ball::BounceDirection::kVertical);
       }  
       // increase volley count
       ++volleys_;
@@ -216,17 +222,17 @@ bool Game::CheckCollision(const SDL_Rect &a, const SDL_Rect &b)
 }
 
 /**
- * Services a new ball and resets game difficulty level
+ * Serves a new ball and resets game difficulty level
  * NOTE: this function  is called after a point;
  * 1- reinit volleys, 
  * 2- reinit ball speed (done in), 
  * 3- reinit paddle angles
  * NOTE: optional add parameter to whom should be the new ball serviced.
- *       default is serviced to who lost.
+ *       default is served to who lost.
  */
-void Game::ServiceNewBall()
+void Game::ServeNewBall()
 {
       volleys_ = 0;
       //ball_.setSpeed(); TODO
-      ball_.Service(field_.width / 2, field_.height / 2); //sets start position.
+      ball_.ServeBall(field_.width / 2, field_.height / 2); //sets start position.
 }

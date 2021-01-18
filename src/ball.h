@@ -7,11 +7,6 @@
 class Ball : public IRenderable
 {
     public:
-       enum class CollisionSide{
-            left_right,
-            top_bottom,
-        };
-        // may replace collisionSide!
         enum class BounceDirection{
             kVertical,
             kHorizontal,
@@ -22,13 +17,13 @@ class Ball : public IRenderable
             level3 = 3,
         };
         //dimensions
-        static const int BALL_DIAMETER = 20;
+        static const int kBallDiameter = 20;
 
         //Max axis velocity
-        static const int BALL_VEL = 3; //
+        static const int kBAllVel = 3; //
 
         //Constructor
-        Ball(const int screenWidth, const int screenHeight);
+        Ball(const int start_pos_x, const int start_pos_y);
 
         //Move Ball
         void Move();
@@ -40,30 +35,27 @@ class Ball : public IRenderable
         const SDL_Rect& getCollider() const;
 
         // Events that affect the ball
-        void Rebound(CollisionSide side);
+        void Rebound(BounceDirection direction);
         void FieldVerticalRebound(const int field_height);
         void FieldRebound(const BounceDirection direction, const int field_width, const int field_height);//const Game::Field fieldSize)
         void WallRebound(const BounceDirection direction, const int wall_coord);
 
-        void changeSpeed(int speedModule);
+        void changeSpeed(int speed);
 
-        void changeDirections(bool axisX, bool axisY);
-
-        void Service(const int service_pos_x, const int service_pos_y);
+        void ServeBall(const int service_pos_x, const int service_pos_y);
 
     private:
         //The X and Y offsets of the ball
-        int mPosX, mPosY;
+        int pos_x_, pos_y_;
 
-        //The vel of the ball
-        int mVelX, mVelY;
-
-        // Screen width and height
-        int mScreenWidth, mScreenHeight;
+        //The velocity of the ball
+        int vel_x_, vel_y_;
 
         // Ball's collison box
-        SDL_Rect collider_;
+        SDL_Rect collider_; //NOTE: it could have different size than render block
 
+        // Ball's render block
+        SDL_Rect render_block_; //NOTE: currently a block, but it could be another type e.g. a texture or image. 
 };
 
 #endif /* BALL_H_ */

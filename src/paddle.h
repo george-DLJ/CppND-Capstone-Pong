@@ -14,11 +14,11 @@ class Paddle : public IRenderable
     };
 
     //dimensions
-    static const int PADDLE_WIDTH = 20;
-    static const int PADDLE_HEIGHT = 100;
+    static const int kPaddleWidth = 20;
+    static const int kPaddleHeight = 100;
 
     //Max axis velocity
-    static const int PADDLE_VEL = 4; //speed: PADDLE_VEL (px) * FPS --> px/sec; currently: 4 px * 60 fps = 120 px/s
+    static const int kPaddleVel = 4; //speed: kPaddleVel (px) * FPS --> px/sec; currently: 4 px * 60 fps = 120 px/s
 
     //Constructor
     Paddle(const int min_y_pos, const int max_y_pos, const int paddle_center_x);
@@ -37,7 +37,7 @@ class Paddle : public IRenderable
 
     private:
         // compute paddle X position based on width
-        static int convert_to_paddle_rect_x(int paddle_center_x, int paddle_width){return paddle_center_x - paddle_width/2;}
+        static int convert_to_paddle_rect_x(int paddle_center_x, int kPaddleWidth){return paddle_center_x - kPaddleWidth/2;}
 
         // min and max position of the paddle
         int min_y_pos_;

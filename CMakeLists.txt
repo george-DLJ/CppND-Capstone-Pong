@@ -32,6 +32,6 @@ target_link_libraries(PongGame ${SDL2_LIBRARIES} ${SDL2_IMAGE_LIBRARIES}) # NOTE
 # NOTE: to install the SDL_Image library type on linux-terminal: sudo apt-get install libsdl2-image-dev 
 
 # Copy images/ folder and content to build/ folder:
-#add_custom_command(TARGET PongGame POST_BUILD
-#    COMMAND ${CMAKE_COMMAND} -E copy_directory
-#        ${CMAKE_SOURCE_DIR}/src/images/ $<TARGET_FILE_DIR:PongGame>/images/)
+add_custom_command(TARGET PongGame POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_SOURCE_DIR}/src/images/ $<TARGET_FILE_DIR:PongGame>/images/)
