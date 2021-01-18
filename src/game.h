@@ -46,7 +46,7 @@ class Game
         // alternative: use SDL_IntersectRect()
         bool CheckCollision(const SDL_Rect &a, const SDL_Rect &b); 
 
-        void ServiceNewBall();
+        void ServeNewBall();
 
         Field field_;
         Ball ball_;
@@ -55,9 +55,8 @@ class Game
         Score score_;
         int volleys_; //current point volleys (use to control ball speed and paddle angles.)
 
-        constexpr  static float kTargetFrameDuration = 1000.0 / 60.0; //milliseconds per frame at 60 frames per second
-
+        constexpr static int kPaddleDistanceFromSide = 20; //pixels
+        constexpr static float kTargetFrameDuration = 1000.0 / 60.0; //milliseconds per frame at 60 frames per second
 
 };
-
 #endif /* GAME_H */

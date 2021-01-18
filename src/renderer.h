@@ -4,12 +4,7 @@
 #include "SDL.h" //TODO: clarify < or " ?
 #include <vector>
 #include <memory>
-//#include "ball.h" //TODO:remove
-//#include "paddle.h" //TODO: remove
 #include "IRenderable.h"
-
-//TODO: foward declaration to avoid include cycle
-
 
 class Renderer {
     public:

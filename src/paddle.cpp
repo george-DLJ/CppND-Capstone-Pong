@@ -9,15 +9,15 @@
 Paddle::Paddle(const int min_y_pos, const int max_y_pos, const int paddle_center_x):
     min_y_pos_(min_y_pos),
     max_y_pos_(max_y_pos), 
-    x_pos_(convert_to_paddle_rect_x(paddle_center_x, PADDLE_WIDTH)),
+    x_pos_(convert_to_paddle_rect_x(paddle_center_x, kPaddleWidth)),
     y_pos_(min_y_pos), 
     vel_y_(0)
 {
     //TODO: check that xPos is within screenWidth; consider paddel width!
     
     // initialize collider:
-    collider_.w = PADDLE_WIDTH;
-    collider_.h = PADDLE_HEIGHT;
+    collider_.w = kPaddleWidth;
+    collider_.h = kPaddleHeight;
     collider_.x = x_pos_;
     collider_.y = y_pos_;
     
@@ -28,10 +28,10 @@ void Paddle::startMovement(Paddle::Direction direction)
     switch( direction )
     {
         case Direction::kUp: 
-            vel_y_ -= PADDLE_VEL;
+            vel_y_ -= kPaddleVel;
             break;
         case Direction::kDown: 
-            vel_y_ += PADDLE_VEL;
+            vel_y_ += kPaddleVel;
             break;
     }
 }
@@ -57,7 +57,7 @@ void Paddle::move()
     y_pos_ += vel_y_;
 
     // If it is outside boundaries move back
-    if((y_pos_ < 0) || (y_pos_ + PADDLE_HEIGHT > max_y_pos_ ))
+    if((y_pos_ < 0) || (y_pos_ + kPaddleHeight > max_y_pos_ ))
     {
         //Move back
         y_pos_ -= vel_y_;
@@ -80,8 +80,8 @@ void Paddle::render(SDL_Renderer* sdl_renderer)
     //Show the paddle
 
     SDL_Rect block;
-    block.w = PADDLE_WIDTH;
-    block.h = PADDLE_HEIGHT;
+    block.w = kPaddleWidth;
+    block.h = kPaddleHeight;
 
     SDL_SetRenderDrawColor(sdl_renderer, 0xFF, 0x00, 0x00, 0xFF); //Color: Red, opaque
     

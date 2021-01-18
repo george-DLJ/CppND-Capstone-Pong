@@ -23,7 +23,6 @@ Renderer::Renderer(const std::size_t screen_width,
         // 1. Initialize SDL
         if(SDL_Init(SDL_INIT_VIDEO) < 0){
             std::cout << "SDL could not initialize. SDL_Error: " << SDL_GetError() << "\n";
-            //throw SDL_error(); Does not work!
             throw std::runtime_error( "SDL could not initialize! SDL Error: ");
         }
 
@@ -32,7 +31,6 @@ Renderer::Renderer(const std::size_t screen_width,
 		if( !sdl_window_ )
 		{
 			std::cout << "Window could not be created! SDL Error: " << SDL_GetError() << "\n";
-			//throw Sdl_error();
             throw std::runtime_error( "SDL could not initialize! SDL Error: ");
 		}
 
@@ -41,13 +39,11 @@ Renderer::Renderer(const std::size_t screen_width,
 		if( !sdl_renderer_ )
 		{
 			std::cout <<  "Renderer could not be created! SDL Error: " << SDL_GetError() << "\n";
-			//throw Sdl_error();
             throw std::runtime_error( "SDL could not initialize! SDL Error: ");
 		}
         
         //4. Initialize renderer color
 		SDL_SetRenderDrawColor( sdl_renderer_, 0xFF, 0xFF, 0xFF, 0xFF );
-
     }
     
     //TODO: implement rule of 5!

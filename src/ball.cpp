@@ -1,65 +1,45 @@
 #include <SDL.h>
-
 #include "ball.h"
 
 #include <iostream> //DEBUG
 
-
-/**
- * 
- * */
-Ball::Ball(const int screenWidth, const int screenHeight):mScreenWidth(screenWidth),mScreenHeight(screenHeight),mPosX(screenWidth/2),mPosY(0), mVelX(BALL_VEL), mVelY(BALL_VEL)
+Ball::Ball(const int start_pos_x, const int start_pos_y):pos_x_(start_pos_x),pos_y_(start_pos_y), vel_x_(kBAllVel), vel_y_(kBAllVel)
 {
     // initialize collider:
-    collider_.w = BALL_DIAMETER;
-    collider_.h = BALL_DIAMETER;
-    collider_.x = mPosX;
-    collider_.y = mPosY;
+    collider_.w = kBallDiameter;
+    collider_.h = kBallDiameter;
+    collider_.x = pos_x_;
+    collider_.y = pos_y_;
+
+    // initialize ball render_element size
+    render_block_.w = kBallDiameter;
+    render_block_.h = kBallDiameter;
 }
-
-
-/**
- * TODO: implement a custom eventqeueue to handle moveEvents 
- *       independent from input device selected.
- *       in order to use different input device without change BL.
- * 
- * TODO: move this method to controls class. This method should be on 
- *       the Ball class.
- */ 
 
 void Ball::Move()
 {
-    //Move ball on x axis (left - right):
-    mPosX += mVelX;
-
-    //Move ball on x axis (up or down):
-    mPosY += mVelY;
+    pos_x_ += vel_x_;
+    pos_y_ += vel_y_;
 
     // update collider pos
-    collider_.x = mPosX;
-    collider_.y = mPosY;
+    collider_.x = pos_x_;
+    collider_.y = pos_y_;
 }
 
 /**
- * TODO: consider move this function to render class or 
- *       separate physics (without SDL) from visualization(with SDL) in two 
- *       classes.
- * 
- * */
+ * this function renders the ball. 
+ * NOTE: currently is represented by a a square,
+ *       but it could be of other type, e.g. Texture, image, etc.
+ */ 
 void Ball::render(SDL_Renderer* sdl_renderer)
 {
-    //Show the ball
-
-    SDL_Rect block;
-    block.w = BALL_DIAMETER;
-    block.h = BALL_DIAMETER;
-
+    //Set color to render the  ball:
     SDL_SetRenderDrawColor(sdl_renderer, 0xFF, 0xCC, 0x00, 0xFF);
     
     // Positon of the top left corner of the ball.
-    block.x = mPosX ;
-    block.y = mPosY ;
-    SDL_RenderFillRect(sdl_renderer, &block);
+    render_block_.x = pos_x_ ;
+    render_block_.y = pos_y_ ;
+    SDL_RenderFillRect(sdl_renderer, &render_block_);
 }
 
 const SDL_Rect& Ball::getCollider() const
@@ -67,18 +47,17 @@ const SDL_Rect& Ball::getCollider() const
     return collider_;
 }
 
-/**
- *  NOTE: consider move this logic to the game controller.
- */
-void Ball::Rebound(CollisionSide side)
+void Ball::Rebound(BounceDirection direction)
 {
-    switch(side)
+    switch(direction)
     {
-        case CollisionSide::left_right:
-            mVelX *= -1;
+        case BounceDirection::kHorizontal:
+            pos_x_ -= vel_x_;   //move back
+            vel_x_ *= -1;       //reverse velocity component direction
             break; 
-        case CollisionSide::top_bottom:
-            mVelY *= -1;
+        case BounceDirection::kVertical:
+            pos_y_ -= vel_y_;   //Move back
+            vel_y_ *= -1;       //reverse velocity component direction
             break; 
     }
 }
@@ -88,15 +67,13 @@ void Ball::Rebound(CollisionSide side)
  * the ball rebounds. That means:
  *  1. the velocity axis perpendicular to the wall is reversed
  *  2. the position component perpendicular to the wall must be reflected. 
- * NOTE: consider move this logic to the game controller.
- *  
- */
+*/
 void Ball::FieldVerticalRebound(const int field_height)
 {
-            mVelY *= -1;
-            int oldPosY = mPosY; //DEBUG
-            mPosY = field_height * (mPosY / (field_height-BALL_DIAMETER)) - (mPosY % (field_height-BALL_DIAMETER));
-            //std::cout << "FieldVerticalRebound: OldPosY: " << oldPosY << " PosY: " << mPosY << "; f-height: " << field_height << "; quotient(/)[0,1]: " << mPosY / field_height << "remainder(%)[0-fh): "<< mPosY%field_height <<"\n";
+            vel_y_ *= -1;
+            int oldPosY = pos_y_; //DEBUG
+            pos_y_ = field_height * (pos_y_ / (field_height-kBallDiameter)) - (pos_y_ % (field_height-kBallDiameter));
+            //std::cout << "FieldVerticalRebound: OldPosY: " << oldPosY << " PosY: " << pos_y_ << "; f-height: " << field_height << "; quotient(/)[0,1]: " << pos_y_ / field_height << "remainder(%)[0-fh): "<< pos_y_%field_height <<"\n";
 }
 
 
@@ -111,25 +88,24 @@ void Ball::FieldRebound(const Ball::BounceDirection direction, const int field_w
     {
         case BounceDirection::kVertical:
             {
-            mVelY *= -1;
-            int oldPosY = mPosY;
-            mPosY = field_height * (mPosY / field_height) - (mPosY % field_height);
-            std::cout << "FieldVerticalRebound: OldPosY: " << oldPosY << " PosY: " << mPosY << "; f-height: " << field_height << "; quotient(/)[0,1]: " << mPosY/field_height << "remainder(%)[0-fh): "<< mPosY%field_height <<"\n"; 
+            vel_y_ *= -1;
+            int oldPosY = pos_y_;
+            pos_y_ = field_height * (pos_y_ / field_height) - (pos_y_ % field_height);
+            std::cout << "FieldVerticalRebound: OldPosY: " << oldPosY << " PosY: " << pos_y_ << "; f-height: " << field_height << "; quotient(/)[0,1]: " << pos_y_/field_height << "remainder(%)[0-fh): "<< pos_y_%field_height <<"\n"; 
             }
             break;
         case BounceDirection::kHorizontal:
             {
-            mVelX *= -1;
-            int oldPosX = mPosX; //DEBUG
-            int quotient = mPosX/field_width; //DEBUG
-            int remainder = mPosX % field_width;
-            mPosX = field_width * (mPosX/field_width) - (mPosX % field_width);
-            std::cout << "FieldHorizontalRebound: OldPosX: " << oldPosX << " PosX: " << mPosX << "; f-width: " << field_width << "; quotient(/)[0,1]: " << quotient << "remainder(%)[0-fh): "<< remainder <<"\n"; 
+            vel_x_ *= -1;
+            int oldPosX = pos_x_; //DEBUG
+            int quotient = pos_x_/field_width; //DEBUG
+            int remainder = pos_x_ % field_width;
+            pos_x_ = field_width * (pos_x_/field_width) - (pos_x_ % field_width);
+            //std::cout << "FieldHorizontalRebound: OldPosX: " << oldPosX << " PosX: " << pos_x_ << "; f-width: " << field_width << "; quotient(/)[0,1]: " << quotient << "remainder(%)[0-fh): "<< remainder <<"\n"; 
             }
             break;
     }
 }
-
 
 /**
  * Rebound against wall with known direction and wall coordinate
@@ -142,20 +118,20 @@ void Ball::WallRebound(const Ball::BounceDirection dir, const int wall_coord)
     {
         case BounceDirection::kVertical:
             {
-            mVelY *= -1;
-            int y_ball {mPosY};
+            vel_y_ *= -1;
+            int y_ball {pos_y_};
             int y_rebounced = wall_coord + (wall_coord - y_ball);
-            mPosY = wall_coord + (wall_coord - mPosY); 
-            std::cout << "WallRebound: TODO: " <<"\n"; 
+            pos_y_ = wall_coord + (wall_coord - pos_y_); 
+            //std::cout << "WallRebound: TODO: " <<"\n"; 
             }
             break;
         case BounceDirection::kHorizontal:
             {
-            mVelX *= -1;
-            int x_ball {mPosX};
+            vel_x_ *= -1;
+            int x_ball {pos_x_};
             int x_rebounced = wall_coord + (wall_coord - x_ball);
-            mPosX =  wall_coord + (wall_coord - mPosX);
-            std::cout << "WallRebound: TODO: " <<"\n"; 
+            pos_x_ =  wall_coord + (wall_coord - pos_x_);
+            //std::cout << "WallRebound: TODO: " <<"\n"; 
             }
             break;
 
@@ -170,32 +146,14 @@ void Ball::WallRebound(const Ball::BounceDirection dir, const int wall_coord)
  * Real calculation will require change speeds to floats.
  * Then use vector normalization.
  */ 
-void Ball::changeSpeed(int speedModule)
+void Ball::changeSpeed(int speed)
 {
-    if (speedModule > 0 )
+    if (speed > 0 )
     {
-        mVelX = mVelX < 0 ?  -speedModule : speedModule;
-        mVelY = mVelY < 0 ?  -speedModule : speedModule;
+        vel_x_ = vel_x_ < 0 ?  -speed : speed;
+        vel_y_ = vel_y_ < 0 ?  -speed : speed;
     }
     
-}
-
-/**
- * reverses one or both directions of the ball:
- * Case 1- in case of a side rebound the ball changes the x axis only
- * case 2- in case the ball touches top or bottom side of paddle, 
- * then an unrealistic rebouond changing both axis is necessary.
- */
-void Ball::changeDirections(bool axisX, bool axisY)
-{
-    if(axisX)
-    {
-        mVelX *= -1;
-    }
-    if(axisY)
-    {
-        mVelY *= -1;
-    }
 }
 
 /**
@@ -204,10 +162,10 @@ void Ball::changeDirections(bool axisX, bool axisY)
  * just the start position is reset (eventually to the middle of the field).
  * 
  */
-void Ball::Service(const int service_pos_x, const int service_pos_y)
+void Ball::ServeBall(const int service_pos_x, const int service_pos_y)
 {
-    mPosX = service_pos_x;
-    mPosY = service_pos_y;
+    pos_x_ = service_pos_x;
+    pos_y_ = service_pos_y;
 
     //TODO:
     //1.  reset speed level to 1
