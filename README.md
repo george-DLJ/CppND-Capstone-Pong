@@ -80,8 +80,8 @@ To exit the game close the window clicking with the mouse on the top right corne
 ### Loops, Functions, I/O
 | x   | Criteria               | Meets Specifications
 |:---:|------------------------|------------------------------------------|
-| &check; | The project demonstrates an understanding of C++ functions and control structures. | A variety of control structures are used in the project. |
-| :heavy_check_mark: | The project code is clearly organized into functions. | The project reads data from a file and process the data, or the program writes data to a file. |
+| &#9745; | The project demonstrates an understanding of C++ functions and control structures. | A variety of control structures are used in the project. |
+| &#9745; | The project code is clearly organized into functions. | The project reads data from a file and process the data, or the program writes data to a file. |
 | &#9744; | The project reads data from an external file or writes data to a file as part of the necessary operation of the program. | The project accepts user input and processes the input. | The project accepts input from a user as part of the necessary operation of the program.
 
 ### Object Oriented Programming
@@ -99,59 +99,21 @@ Done | Criteria | Meets Specifications
 
 ### Memory Management
 Criteria 	Meets Specifications
-
-The project makes use of references in function declarations.
-
-At least two variables are defined as references, or two functions use pass-by-reference in the project code.
-
-The project uses destructors appropriately.
-	
-
-At least one class that uses unmanaged dynamically allocated memory, along with any class that otherwise needs to modify state upon the termination of an object, uses a destructor.
-
-The project uses scope / Resource Acquisition Is Initialization (RAII) where appropriate.
-	
-
-The project follows the Resource Acquisition Is Initialization pattern where appropriate, by allocating objects at compile-time, initializing objects when they are declared, and utilizing scope to ensure their automatic destruction.
-
-The project follows the Rule of 5.
-	
-
-For all classes, if any one of the copy constructor, copy assignment operator, move constructor, move assignment operator, and destructor are defined, then all of these functions are defined.
-
-The project uses move semantics to move data, instead of copying it, where possible.
-	
-
-For classes with move constructors, the project returns objects of that class by value, and relies on the move constructor, instead of copying the object.
-
-The project uses smart pointers instead of raw pointers.
-	
-
-The project uses at least one smart pointer: unique_ptr, shared_ptr, or weak_ptr. The project does not use raw pointers.
+--- | --- | ---
+&#9745; | The project makes use of references in function declarations. | At least two variables are defined as references, or two functions use pass-by-reference in the project code.
+&#9744; | The project uses destructors appropriately. | At least one class that uses unmanaged dynamically allocated memory, along with any class that otherwise needs to modify state upon the termination of an object, uses a destructor.
+&#9744; | The project uses scope / Resource Acquisition Is Initialization (RAII) where appropriate. | The project follows the Resource Acquisition Is Initialization pattern where appropriate, by allocating objects at compile-time, initializing objects when they are declared, and utilizing scope to ensure their automatic destruction.
+&#9744; | The project follows the Rule of 5. | For all classes, if any one of the copy constructor, copy assignment operator, move constructor, move assignment operator, and destructor are defined, then all of these functions are defined.
+&#9744; | The project uses move semantics to move data, instead of copying it, where possible. | For classes with move constructors, the project returns objects of that class by value, and relies on the move constructor, instead of copying the object.
+&#9744; | The project uses smart pointers instead of raw pointers. | The project uses at least one smart pointer: unique_ptr, shared_ptr, or weak_ptr. The project does not use raw pointers.
 
 ### Concurrency
-Criteria 	Meets Specifications
-
-The project uses multithreading.
-	
-
-The project uses multiple threads in the execution.
-
-A promise and future is used in the project.
-	
-
-A promise and future is used to pass data from a worker thread to a parent thread in the project code.
-
-A mutex or lock is used in the project.
-	
-
-A mutex or lock (e.g. std::lock_guard or `std::unique_lock) is used to protect data that is shared across multiple threads in the project code.
-
-A condition variable is used in the project.
-	
-
-A std::condition_variable is used in the project code to synchronize thread execution.
+Done | Criteria | Meets Specifications
+--- | --- | ---
+&#9744; | The project uses multithreading. | The project uses multiple threads in the execution.
+&#9744; | A promise and future is used in the project. | A promise and future is used to pass data from a worker thread to a parent thread in the project code.
+&#9744; | A mutex or lock is used in the project. | A mutex or lock (e.g. std::lock_guard or `std::unique_lock) is used to protect data that is shared across multiple threads in the project code.
+&#9744; | A condition variable is used in the project. | A std::condition_variable is used in the project code to synchronize thread execution.
 
 
-References: 
-- Juloaiza CppND-Capstone-Space-Game. Readme File.
+## References: 
