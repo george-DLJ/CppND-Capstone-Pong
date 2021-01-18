@@ -31,7 +31,9 @@ class Game
             playerLeft,
             playerRight
         };
+
         Game(int field_width, int fiedl_height);
+        
         void Run(const Controller  &controller, Renderer &renderer); //Controller const &controller, Renderer &renderer, std::size_t target_frame_duration
 
         Score GetScore() const;
@@ -41,10 +43,6 @@ class Game
         void CheckFieldCollisions(Ball &ball, const Field &field);
     
         void CheckPaddleCollision(Ball &ball, Paddle &paddle);
-
-        // check collisions between two colliders. 
-        // alternative: use SDL_IntersectRect()
-        bool CheckCollision(const SDL_Rect &a, const SDL_Rect &b); 
 
         void ServeNewBall();
 

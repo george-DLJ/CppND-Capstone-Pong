@@ -4,7 +4,7 @@
 #include <string>
 
 /**
- * NOTE: constructor requires initialize following resourcres: 
+ * NOTE: the renderer constructor requires initialize following resourcres: 
  *       1 - (initialize) SDL
  *       2 - window
  *       3 - renderer
@@ -12,9 +12,7 @@
  * NOTE: implementing RAII: if constructor returns, the object is considered valid.
  *       goal: guarantee an object is never-empty. 
  *       Also: a thrown exception means there isn't any object 
- * TODO: implement move semantics and rule of 5. 
- * TODO: Expand to initialize textures (or create a textures class)
- * */
+ */
 Renderer::Renderer(const std::size_t screen_width,
                    const std::size_t screen_height)
     :screen_width_(screen_width),
@@ -46,50 +44,23 @@ Renderer::Renderer(const std::size_t screen_width,
 		SDL_SetRenderDrawColor( sdl_renderer_, 0xFF, 0xFF, 0xFF, 0xFF );
     }
     
-    //TODO: implement rule of 5!
     Renderer::~Renderer() {
         //Destroy window	
         SDL_DestroyRenderer( sdl_renderer_ );
-        sdl_renderer_ = nullptr; //TODO:remove when using smart_pointers;
+        sdl_renderer_ = nullptr; 
         SDL_DestroyWindow( sdl_window_ );
-        sdl_window_ = nullptr; //TODO:remove when using smart_pointers;
+        sdl_window_ = nullptr; 
         
-
 	    //Quit SDL subsystems
-	    //IMG_Quit(); //requires SDL_Image extension
 	    SDL_Quit();
     }
 
-    // /** 
-    //  * Plan A:  First approach of the class passing the elements to render each time.
-    //  * ineficient and difficult to maintain, as it requires change this class
-    //  * everytime the game has new elements. 
-    //  * 
-    //  * improvement: PlanB and  PlanC
-    //  * 
-    //  * TODO: improve using an interface; see plan B
-    //  * 
-    //  */ 
-    // void Renderer::Render(Ball &ball,  Paddle &paddleLeft,  Paddle &paddleRight)
-    // {
-    //     // 1. Clear screen
-	// 	SDL_SetRenderDrawColor( sdl_renderer_, 0xFF, 0xFF, 0xFF, 0xFF );
-	// 	SDL_RenderClear( sdl_renderer_ );
-    //     // 2. Render objects
-    //     ball.render(sdl_renderer_);
-	// 	paddleLeft.render(sdl_renderer_);
-	// 	paddleRight.render(sdl_renderer_);
-    //     //TODO: 2.2 render scores.
-
-    //     // 3. Update screen
-	// 	SDL_RenderPresent( sdl_renderer_ );
-    // }
-
     /**
-     * Plan B: Added an Interface for all renderable elements, allows us to have 
-     * a vector of references to those objects.
-     * Now is this class decoupled from game objects.
-     * PROBLEM: it uses raw pointers, and that can be problematic!
+     * Using an interface of IRenderable elements, allows us to have 
+     * a vector of references to those objects, no matter if they are ball, 
+     * or Paddle. 
+     * Now this class is decoupled from the game objects.
+     * PROBLEM: I couldn't make it work using a vector of smart_pointers.
      */
     void Renderer::Render(std::vector<IRenderable*> elements)
     {
@@ -105,36 +76,9 @@ Renderer::Renderer(const std::size_t screen_width,
     }
 
     /**
-     * TODO: Fix! It fails to update moved elements.
-     * use the IRenderable interface to render all sort of game objects
-     * that implement the interface. In this way we can decouple this class
-     * from ball, paddle, etc.
-     * FAILS!!
-     */
-    void Renderer::Render()
-    {
-        // 1. Clear screen
-		SDL_SetRenderDrawColor( sdl_renderer_, 0xFF, 0xFF, 0xFF, 0xFF );
-		SDL_RenderClear( sdl_renderer_ );
-        // 2. Render objects
-        for(auto r : renderable_elements_){
-            r->render(sdl_renderer_);
-        }
-        // 3. Update screen
-		SDL_RenderPresent( sdl_renderer_ );
-    }
-
-    void Renderer::AddRenderableElement(std::shared_ptr<IRenderable> element)
-    {
-        renderable_elements_.push_back(element);
-    }
-
-    /**
      * update window title with score and framerate information.
      */ 
     void Renderer::UpdateWindowTitle(int score_left, int score_right, int fps){
         std::string title{"Score: " + std::to_string(score_left) + " : " + std::to_string(score_right) + " FPS: " + std::to_string(fps)};
         SDL_SetWindowTitle(sdl_window_, title.c_str());
     }
-
-

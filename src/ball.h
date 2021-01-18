@@ -20,18 +20,16 @@ class Ball : public IRenderable
         static const int kBallDiameter = 20;
 
         //Max axis velocity
-        static const int kBAllVel = 3; //
+        static const int kBAllVel = 3;
 
         //Constructor
         Ball(const int start_pos_x, const int start_pos_y);
 
-        //Move Ball
         void Move();
 
-        //Show ball on screen:
         void render(SDL_Renderer* sdl_renderer);
 
-        // return collision box
+        // returns the collision box
         const SDL_Rect& getCollider() const;
 
         // Events that affect the ball

@@ -10,8 +10,7 @@ Currently implemented feautures:
 - keyboard controls 
 - Score on Window title
 
-[TODO: add Gif]
-
+<img src="CppND-Capstone-Project_PongGame_01.png"/>
 
 NOTE: this is a coding exercise and it is not my goal to fully port the original game. Is my intention to implement some more features as a way to further learn C++ and SDL techniques.
 
@@ -50,9 +49,10 @@ To exit the game close the window clicking with the mouse on the top right corne
 4. Run it: `./PongGame`
 
 ## Libraries used in this project (Required)
- This project usesSDL
- standard library
-[TODO]
+ This project uses following libraries:
+ - SDL <http://www.libsdl.org/>
+ - Standard library
+
 
 ## Class Structure (Required)
 ```bash
@@ -62,21 +62,17 @@ To exit the game close the window clicking with the mouse on the top right corne
     |-- ball.h
     |-- controller.cpp #This class controls the user input.
     |-- controller.h
-    |-- game.cpp      # The game class runs the game loop.
+    |-- game.cpp       # The game class runs the game loop.
     |-- game.h
-    |-- main.cpp     # Entry point to the program. Runs the game.
-    |-- paddle.cpp   # Class for the paddles instances.
+    |-- main.cpp       # Entry point to the program. Runs the game.
+    |-- paddle.cpp     # Class for the paddles instances.
     |-- paddle.h
-    |-- renderer.cpp  # Render the game objects to the window.
+    |-- renderer.cpp   # Render the game objects to the window.
     `-- renderer.h
 
 ```
 
 ## Rubric Points addressed (Required)
-[TODO; template: Rubric Point; where in code (file, line number) ]
- 
-
-
 ### Loops, Functions, I/O
 | Done   | Criteria               | Meets Specifications
 |:---:|------------------------|------------------------------------------|
@@ -117,3 +113,9 @@ Done | Criteria | Meets Specifications
 
 
 ## References: 
+-. "A tour of C++" 2nd Ed from  B. Stipstrout p.54
+- const functions: 
+  - https://stackoverflow.com/a/8005559
+  - https://stackoverflow.com/a/751783
+- Interfaces:
+  - https://stackoverflow.com/a/270925

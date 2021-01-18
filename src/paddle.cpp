@@ -3,8 +3,7 @@
 #include "paddle.h"
 
 /**
- * The paddle has a fixed xPosition at one of the ends of the screen.
- * PRE: the xPos of the paddle must be within the screen width.
+ * The paddle has a fixed xPosition and it can move only up and down
  * */
 Paddle::Paddle(const int min_y_pos, const int max_y_pos, const int paddle_center_x):
     min_y_pos_(min_y_pos),
@@ -13,14 +12,11 @@ Paddle::Paddle(const int min_y_pos, const int max_y_pos, const int paddle_center
     y_pos_(min_y_pos), 
     vel_y_(0)
 {
-    //TODO: check that xPos is within screenWidth; consider paddel width!
-    
     // initialize collider:
     collider_.w = kPaddleWidth;
     collider_.h = kPaddleHeight;
     collider_.x = x_pos_;
-    collider_.y = y_pos_;
-    
+    collider_.y = y_pos_;   
 }
 
 void Paddle::startMovement(Paddle::Direction direction)
@@ -47,10 +43,6 @@ void Paddle::stopMovement(Paddle::Direction direction)
     }
 }
 
-/**
- * NOTE: First approach Paddle has its 0,0 point on top-left corner of the square.
- * NOTE: Paddle has no movement on Y axis.
- */
 void Paddle::move()
 {
     //Move Paddle on Y axis (up or down):
@@ -66,19 +58,11 @@ void Paddle::move()
     // update collider
     // NOTE: collider x.pos is fixed on paddle.
     collider_.y = y_pos_;
-
 }
 
-/**
- * TODO: consider move this function to render class or 
- *       separate physics (without SDL) from visualization(with SDL) in two 
- *       classes.
- * 
- * */
 void Paddle::render(SDL_Renderer* sdl_renderer)
 {
     //Show the paddle
-
     SDL_Rect block;
     block.w = kPaddleWidth;
     block.h = kPaddleHeight;
@@ -91,7 +75,7 @@ void Paddle::render(SDL_Renderer* sdl_renderer)
 }
 
 /**
- * I need to expose the instance collider Rectangle, but not allow callers to 
+ * NOTE: I need to expose the instance collider Rectangle, but not allow callers to 
  * modify it. 
  * By making the function const (getCollider const) it is avoided changes on members data.
  * 
