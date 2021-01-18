@@ -129,17 +129,32 @@ void Game::CheckFieldCollisions(Ball &ball, const Field &field)
 
 void Game::CheckPaddleCollision(Ball &ball, Paddle &paddle)
 {
-  if (CheckCollision(ball.getCollider(), paddle.getCollider()))
-  {
-    // rebound ball
-    ball.Rebound(Ball::CollisionSide::left);
+  // if (CheckCollision(ball.getCollider(), paddle.getCollider()))
+  // {
+  //   // rebound ball
+  //   ball.Rebound(Ball::CollisionSide::left_right);
 
-    // increase volleys count
-    ++volleys_;
+  //   // increase volleys count
+  //   ++volleys_;
+  // }
+  // Alternative use SDL Collision function
+  if(SDL_HasIntersection(&(ball.getCollider()), &(paddle.getCollider())))
+  {
+    SDL_Rect collision_intersection;
+    if(SDL_IntersectRect(&(ball.getCollider()), &(paddle.getCollider()), &collision_intersection))
+    {
+      if(collision_intersection.h > collision_intersection.w)
+      {
+        ball.Rebound(Ball::CollisionSide::left_right);
+      }
+      else
+      {
+          ball.Rebound(Ball::CollisionSide::top_bottom);
+      }  
+      // increase volley count
+      ++volleys_;
+    }
   }
-  // 
-  // 
-  // 
 }
 
 // Check gameLevel:
