@@ -8,10 +8,8 @@ class Ball : public IRenderable
 {
     public:
        enum class CollisionSide{
-            left,
-            right,
-            top,
-            bottom,
+            left_right,
+            top_bottom,
         };
         // may replace collisionSide!
         enum class BounceDirection{

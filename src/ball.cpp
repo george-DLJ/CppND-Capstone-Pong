@@ -74,15 +74,12 @@ void Ball::Rebound(CollisionSide side)
 {
     switch(side)
     {
-        case CollisionSide::right:
-        case CollisionSide::left:
+        case CollisionSide::left_right:
             mVelX *= -1;
             break; 
-        case CollisionSide::top:
-        case CollisionSide::bottom:
+        case CollisionSide::top_bottom:
             mVelY *= -1;
             break; 
-
     }
 }
 
