@@ -18,14 +18,14 @@ NOTE: this is a coding exercise and it is not my goal to fully port the original
 This is a two player game. Each player controls one of the paddles which can be moved up and down only with following controls:
  
  Left Player controls:
-  * key 'w': moves the paddle up
-  * key 's': moves the paddle down
+  * key 'w': moves the left paddle up
+  * key 's': moves the left paddle down
 
  Right player controls:
-  * Arrow key up: moves paddle up
-  * Arrow key down: moves the paddle down
+  * Arrow key up: moves right paddle up
+  * Arrow key down: moves the right paddle down
 
-A Point is scored  each time the ball goes through the opposit side of the field. The ball rebounds on top and bottom boundaries.
+A Point is scored  each time the ball goes through the opposite side of the field. The ball rebounds on top and bottom boundaries.
 
 To exit the game close the window clicking with the mouse on the top right corner 'x'.
 
@@ -48,13 +48,13 @@ To exit the game close the window clicking with the mouse on the top right corne
 3. Compile: `cmake .. && make`
 4. Run it: `./PongGame`
 
-## Libraries used in this project (Required)
- This project uses following libraries:
+## Libraries used in this project
+This project uses following libraries:
  - SDL <http://www.libsdl.org/>
  - Standard library
 
 
-## Class Structure (Required)
+## Class Structure
 ```bash
 `-- src
     |-- IRenderable.h  # Interface for all objects that need to be rendered.
@@ -72,13 +72,13 @@ To exit the game close the window clicking with the mouse on the top right corne
 
 ```
 
-## Rubric Points addressed (Required)
+## Rubric Points addressed
 ### Loops, Functions, I/O
-| Done   | Criteria               | Meets Specifications
-|:---:|------------------------|------------------------------------------|
-| &#9745; | The project demonstrates an understanding of C++ functions and control structures. | A variety of control structures are used in the project. |
-| &#9745; | The project code is clearly organized into functions. | The project reads data from a file and process the data, or the program writes data to a file. |
-| &#9744; | The project reads data from an external file or writes data to a file as part of the necessary operation of the program. | The project accepts user input and processes the input. | The project accepts input from a user as part of the necessary operation of the program.
+ Done | Criteria | Meets Specifications
+--- | --- | ---
+&#9745; | The project demonstrates an understanding of C++ functions and control structures. | A variety of control structures are used in the project. The project code is clearly organized into functions. 
+&#9744; | The project reads data from a file and process the data, or the program writes data to a file. | The project reads data from an external file or writes data to a file as part of the necessary operation of the program. 
+&#9745; | The project accepts user input and processes the input. | The project accepts input from a user as part of the necessary operation of the program.
 
 ### Object Oriented Programming
 Done | Criteria | Meets Specifications
@@ -98,7 +98,7 @@ Done | Criteria | Meets Specifications
 --- | --- | ---
 &#9745; | The project makes use of references in function declarations. | At least two variables are defined as references, or two functions use pass-by-reference in the project code.
 &#9744; | The project uses destructors appropriately. | At least one class that uses unmanaged dynamically allocated memory, along with any class that otherwise needs to modify state upon the termination of an object, uses a destructor.
-&#9744; | The project uses scope / Resource Acquisition Is Initialization (RAII) where appropriate. | The project follows the Resource Acquisition Is Initialization pattern where appropriate, by allocating objects at compile-time, initializing objects when they are declared, and utilizing scope to ensure their automatic destruction.
+&#9745; | The project uses scope / Resource Acquisition Is Initialization (RAII) where appropriate. | The project follows the Resource Acquisition Is Initialization pattern where appropriate, by allocating objects at compile-time, initializing objects when they are declared, and utilizing scope to ensure their automatic destruction.
 &#9744; | The project follows the Rule of 5. | For all classes, if any one of the copy constructor, copy assignment operator, move constructor, move assignment operator, and destructor are defined, then all of these functions are defined.
 &#9744; | The project uses move semantics to move data, instead of copying it, where possible. | For classes with move constructors, the project returns objects of that class by value, and relies on the move constructor, instead of copying the object.
 &#9744; | The project uses smart pointers instead of raw pointers. | The project uses at least one smart pointer: unique_ptr, shared_ptr, or weak_ptr. The project does not use raw pointers.

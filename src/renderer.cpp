@@ -69,7 +69,7 @@ Renderer::Renderer(const std::size_t screen_width,
 		SDL_RenderClear( sdl_renderer_ );
         // 2. Render objects
         for(auto e : elements){
-            e->render(sdl_renderer_);
+            e->Render(sdl_renderer_);
         }
         // 3. Update screen
 		SDL_RenderPresent( sdl_renderer_ );
