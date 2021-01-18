@@ -72,17 +72,17 @@ Score Game::GetScore() const { return score_; }
 void Game::Update() {
   
   ball_.Move();  
-  paddle_left_.move();
-  paddle_right_.move();  
+  paddle_left_.Move();
+  paddle_right_.Move();  
   
-  CheckFieldCollisions(ball_, field_);
-  CheckPaddleCollision(ball_, paddle_left_);
-  CheckPaddleCollision(ball_, paddle_right_);
+  CheckCollision(ball_, field_);
+  CheckCollision(ball_, paddle_left_);
+  CheckCollision(ball_, paddle_right_);
 }
 
-void Game::CheckFieldCollisions(Ball &ball, const Field &field)
+void Game::CheckCollision(Ball &ball, const Field &field)
 {
-  const SDL_Rect &ball_collider = ball.getCollider();
+  const SDL_Rect &ball_collider = ball.GetCollider();
   // Goal on Left player field
   if(ball_collider.x < 0) 
   {
@@ -113,12 +113,12 @@ void Game::CheckFieldCollisions(Ball &ball, const Field &field)
  *  - when the intersection is wider than higher --> the collision happened on top or bottom edges;
  *  - when the intersection is higher than wider --> the collision happened on the left or right sides of the paddle.   
  */
-void Game::CheckPaddleCollision(Ball &ball, Paddle &paddle)
+void Game::CheckCollision(Ball &ball, Paddle &paddle)
 {
-  if(SDL_HasIntersection(&(ball.getCollider()), &(paddle.getCollider())))
+  if(SDL_HasIntersection(&(ball.GetCollider()), &(paddle.GetCollider())))
   {
     SDL_Rect collision_intersection;
-    if(SDL_IntersectRect(&(ball.getCollider()), &(paddle.getCollider()), &collision_intersection))
+    if(SDL_IntersectRect(&(ball.GetCollider()), &(paddle.GetCollider()), &collision_intersection))
     {
       if(collision_intersection.h > collision_intersection.w)
       {

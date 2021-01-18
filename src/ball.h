@@ -27,10 +27,10 @@ class Ball : public IRenderable
 
         void Move();
 
-        void render(SDL_Renderer* sdl_renderer);
+        void Render(SDL_Renderer* sdl_renderer) override;
 
         // returns the collision box
-        const SDL_Rect& getCollider() const;
+        const SDL_Rect& GetCollider() const;
 
         // Events that affect the ball
         void Rebound(BounceDirection direction);

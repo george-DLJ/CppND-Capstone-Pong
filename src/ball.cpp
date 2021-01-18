@@ -29,7 +29,7 @@ void Ball::Move()
  * NOTE: currently is represented by a a square,
  *       but it could be of other type, e.g. Texture, image, etc.
  */ 
-void Ball::render(SDL_Renderer* sdl_renderer)
+void Ball::Render(SDL_Renderer* sdl_renderer)
 {
     //Set color to render the  ball (Dark Yellow):
     SDL_SetRenderDrawColor(sdl_renderer, 0xFF, 0xCC, 0x00, 0xFF);
@@ -40,7 +40,7 @@ void Ball::render(SDL_Renderer* sdl_renderer)
     SDL_RenderFillRect(sdl_renderer, &render_block_);
 }
 
-const SDL_Rect& Ball::getCollider() const
+const SDL_Rect& Ball::GetCollider() const
 {
     return collider_;
 }

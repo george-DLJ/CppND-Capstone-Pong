@@ -24,18 +24,18 @@ void Controller::HandleInput(bool &running,
 			{
 				// paddle_left keys:
 				case SDLK_w: 
-					paddle_left.startMovement(Paddle::Direction::kUp);
+					paddle_left.StartMovement(Paddle::Direction::kUp);
 					break;
 				case SDLK_s: 
-					paddle_left.startMovement(Paddle::Direction::kDown);
+					paddle_left.StartMovement(Paddle::Direction::kDown);
 					break;
 
 				// paddle_right keys:
 				case SDLK_UP:
-          			paddle_right.startMovement(Paddle::Direction::kUp);
+          			paddle_right.StartMovement(Paddle::Direction::kUp);
           			break;
 		        case SDLK_DOWN:
-        			paddle_right.startMovement(Paddle::Direction::kDown);
+        			paddle_right.StartMovement(Paddle::Direction::kDown);
           			break;
 			}
 		}
@@ -50,18 +50,18 @@ void Controller::HandleInput(bool &running,
 			{
 				// paddle_right keys:
 				case SDLK_w:
-          			paddle_left.stopMovement(Paddle::Direction::kUp);
+          			paddle_left.StopMovement(Paddle::Direction::kUp);
           			break;
 		        case SDLK_s:
-        			paddle_left.stopMovement(Paddle::Direction::kDown);
+        			paddle_left.StopMovement(Paddle::Direction::kDown);
           			break;
 
 				// paddle_right keys:
 				case SDLK_UP:
-          			paddle_right.stopMovement(Paddle::Direction::kUp);
+          			paddle_right.StopMovement(Paddle::Direction::kUp);
           			break;
 		        case SDLK_DOWN:
-        			paddle_right.stopMovement(Paddle::Direction::kDown);
+        			paddle_right.StopMovement(Paddle::Direction::kDown);
           			break;
 			}
 		} 

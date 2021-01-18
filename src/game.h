@@ -40,9 +40,10 @@ class Game
 
     private: 
         void Update();
-        void CheckFieldCollisions(Ball &ball, const Field &field);
+        
+        void CheckCollision(Ball &ball, const Field &field);
     
-        void CheckPaddleCollision(Ball &ball, Paddle &paddle);
+        void CheckCollision(Ball &ball, Paddle &paddle);
 
         void ServeNewBall();
 

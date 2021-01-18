@@ -14,7 +14,7 @@ class IRenderable
 public:
     // '=0' at the end of the function states that this is a 'pure virtual' function,  
     // this means, that it must be implemented by derived classes.
-    virtual void render(SDL_Renderer* sdl_renderer) = 0;
+    virtual void Render(SDL_Renderer* sdl_renderer) = 0;
 
     // Interfaces must always implement virtual destructor:
     // The reason is if the destructor is non-virtual, they will call the interface's destructor 

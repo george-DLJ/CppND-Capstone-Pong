@@ -27,16 +27,16 @@ class Paddle : public IRenderable
     Paddle(const int min_y_pos, const int max_y_pos, const int paddle_center_x);
 
     //React to user controls:
-    void startMovement(Direction direction);
-    void stopMovement(Direction direction);
+    void StartMovement(Direction direction);
+    void StopMovement(Direction direction);
 
     //Move Paddle
-    void move();
+    void Move();
 
     //Show Paddle on screen:
-    void render(SDL_Renderer* sdl_renderer);
+    void Render(SDL_Renderer* sdl_renderer) override;
 
-    const SDL_Rect& getCollider() const;
+    const SDL_Rect& GetCollider() const;
 
     private:
         // compute paddle X position based on width

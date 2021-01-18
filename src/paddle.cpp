@@ -19,7 +19,7 @@ Paddle::Paddle(const int min_y_pos, const int max_y_pos, const int paddle_center
     collider_.y = y_pos_;   
 }
 
-void Paddle::startMovement(Paddle::Direction direction)
+void Paddle::StartMovement(Paddle::Direction direction)
 {
     switch( direction )
     {
@@ -32,7 +32,7 @@ void Paddle::startMovement(Paddle::Direction direction)
     }
 }
 
-void Paddle::stopMovement(Paddle::Direction direction)
+void Paddle::StopMovement(Paddle::Direction direction)
 {
     switch( direction )
     {
@@ -43,7 +43,7 @@ void Paddle::stopMovement(Paddle::Direction direction)
     }
 }
 
-void Paddle::move()
+void Paddle::Move()
 {
     //Move Paddle on Y axis (up or down):
     y_pos_ += vel_y_;
@@ -60,7 +60,7 @@ void Paddle::move()
     collider_.y = y_pos_;
 }
 
-void Paddle::render(SDL_Renderer* sdl_renderer)
+void Paddle::Render(SDL_Renderer* sdl_renderer)
 {
     //Show the paddle
     SDL_Rect block;
@@ -83,7 +83,7 @@ void Paddle::render(SDL_Renderer* sdl_renderer)
  * see: https://stackoverflow.com/a/8005559
  *      https://stackoverflow.com/a/751783
  */
-const SDL_Rect& Paddle::getCollider() const
+const SDL_Rect& Paddle::GetCollider() const
 {
     return collider_;
 }
