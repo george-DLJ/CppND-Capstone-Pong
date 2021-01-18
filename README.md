@@ -78,7 +78,7 @@ To exit the game close the window clicking with the mouse on the top right corne
 
 
 ### Loops, Functions, I/O
-| x   | Criteria               | Meets Specifications
+| Done   | Criteria               | Meets Specifications
 |:---:|------------------------|------------------------------------------|
 | &#9745; | The project demonstrates an understanding of C++ functions and control structures. | A variety of control structures are used in the project. |
 | &#9745; | The project code is clearly organized into functions. | The project reads data from a file and process the data, or the program writes data to a file. |
@@ -98,7 +98,7 @@ Done | Criteria | Meets Specifications
 &#9744; | Templates generalize functions in the project. | One function is declared with a template that allows it to accept a generic parameter.
 
 ### Memory Management
-Criteria 	Meets Specifications
+Done | Criteria | Meets Specifications
 --- | --- | ---
 &#9745; | The project makes use of references in function declarations. | At least two variables are defined as references, or two functions use pass-by-reference in the project code.
 &#9744; | The project uses destructors appropriately. | At least one class that uses unmanaged dynamically allocated memory, along with any class that otherwise needs to modify state upon the termination of an object, uses a destructor.
