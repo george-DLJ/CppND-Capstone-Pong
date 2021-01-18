@@ -1,5 +1,5 @@
-#ifndef IRENDERABLE_H_
-#define IRENDERABLE_H_
+#ifndef IRENDERABLE_H
+#define IRENDERABLE_H
 
 #include <SDL.h>
 
@@ -23,4 +23,4 @@ public:
     virtual ~IRenderable() {};
 };
 
-#endif /* IRENDERABLE_H_ */
+#endif /* IRENDERABLE_H */

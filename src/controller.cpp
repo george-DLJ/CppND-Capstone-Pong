@@ -2,11 +2,6 @@
 #include "SDL.h"
 #include "paddle.h"
 
-/**
- *  * TODO: implement a custom eventqeueue to handle moveEvents 
- *       independent from input device selected.
- *       in order to use different input device without change BL.
- */ 
 void Controller::HandleInput(bool &running, 
 							 Paddle &paddle_left, 
 							 Paddle &paddle_right) const {
@@ -24,7 +19,6 @@ void Controller::HandleInput(bool &running,
 		// Check paddles keys:
 		if( e.type == SDL_KEYDOWN && e.key.repeat == 0)
 		{
-			
 			//Adjust the velocity
 			switch( e.key.keysym.sym)
 			{
@@ -74,7 +68,3 @@ void Controller::HandleInput(bool &running,
 
 	}
 }
-
-// REFACTOR:
-// void Controller::HandleInput(bool &running, vector<IControllable> controllableElements)
-

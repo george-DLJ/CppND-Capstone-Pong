@@ -8,13 +8,9 @@ Game::Game(int field_width, int field_height)
       paddle_left_(0, field_height, kPaddleDistanceFromSide),
       paddle_right_(0, field_height, field_width - kPaddleDistanceFromSide),
       score_{0,0},
-      volleys_(0)
-      {
-
-        
+      volleys_(0){      
 }
 
-//void Game::Run(Controller const &controller, Renderer &renderer,               std::size_t target_frame_duration)
 void Game::Run(const Controller &controller, Renderer &renderer) // First approach without frame_calc 
 {
   // variables for game timing control
@@ -26,21 +22,15 @@ void Game::Run(const Controller &controller, Renderer &renderer) // First approa
   Uint32 title_timestamp = SDL_GetTicks();
   int frame_count = 0;
   
-  // //TODO: optimize rendering (FAILS) (Plan C)
-  // renderer.AddRenderableElement(std::make_shared<Ball>(ball_));
-  // renderer.AddRenderableElement(std::make_shared<Paddle>(paddle_left_));
-  // renderer.AddRenderableElement(std::make_shared<Paddle>(paddle_right_));
-
   std::vector<IRenderable*> renderables;
   renderables.push_back(&ball_);
   renderables.push_back(&paddle_left_);
   renderables.push_back(&paddle_right_);
 
-
   bool running = true;
 
     // Game loop:
-    while (running) //playing, playingPoint
+    while (running)
     {
     frame_start = SDL_GetTicks();
 
@@ -49,15 +39,9 @@ void Game::Run(const Controller &controller, Renderer &renderer) // First approa
     // 2. Update:
     Update();
     // 3. Render:
-    // TODO: render once every x milliseconds.
-    //renderer.Render(ball_, paddle_left_, paddle_right_); //Plan A: not so good idea, requires refactor renderer class by each new renderable element on game.
-    renderer.Render(renderables); //Alternative (Plan B): change input parameter for a vector of IRenderable;
-    //renderer.Render(); //TODO: fix: it doesn't work! does not update the positions. (Plan C)
+    renderer.Render(renderables); 
 
     frame_end = SDL_GetTicks();
-
-    // Keep track of how long each loop through the input/update/render cycle
-    // takes.
     frame_count++;
     frame_duration = frame_end - frame_start;
 
@@ -77,73 +61,60 @@ void Game::Run(const Controller &controller, Renderer &renderer) // First approa
   }
 }
 
+Score Game::GetScore() const { return score_; }
 
+/**
+ * Updates the game dynamics as follows:
+ * 1. Update game elements moves: ball and both paddles
+ * 2. Check if there where collisions between ball and game elements.
+ * 3. (Optionally) the difficulty could be increasesd.
+ */  
 void Game::Update() {
-  // 1. Update movements
-  // 1.1 Update Ball
+  
   ball_.Move();  
-  // 1.2 Update Paddles
   paddle_left_.move();
   paddle_right_.move();  
-  // 2. CheckCollisions:
-  // 2.1 CheckFieldCollisions
+  
   CheckFieldCollisions(ball_, field_);
-  // 2.2 CheckPaddleCollisions
   CheckPaddleCollision(ball_, paddle_left_);
   CheckPaddleCollision(ball_, paddle_right_);
-  // 3. Set Difficulty
-  // ball speed and paddle angles:
-  // CheckGameLevel(++_volleys);  
 }
-
-Score Game::GetScore() const { return score_; }
 
 void Game::CheckFieldCollisions(Ball &ball, const Field &field)
 {
   const SDL_Rect &ball_collider = ball.getCollider();
   // Goal on Left player field
-    if(ball_collider.x < 0) 
-    {
-      // Goal for right player:
-      // 1- update scores
-      // 2- reinit level (volleys, ball speed, paddle angles)
-      ++score_.playerRight;
-      ServeNewBall();
+  if(ball_collider.x < 0) 
+  {
+    // Goal for right player:
+    // 1- update scores
+    // 2- reinit level (volleys, ball speed, paddle angles)
+    ++score_.playerRight;
+    ServeNewBall();
+  }
+  else if( ball_collider.x + ball_collider.w > field.width )
+  {
+    // Goal for left player!
+    ++score_.playerLeft;
+    ServeNewBall();
 
-
-    }
-    else if( ball_collider.x + ball_collider.w > field.width )
-    {
-      // Goal for left player!
-      ++score_.playerLeft;
-      ServeNewBall();
-
-    }
-    // Rebound on filed top and bottom walls
-    else if(ball_collider.y < 0 || ball_collider.y + ball_collider.h > field.height)
-    {
-      ball_.FieldVerticalRebound(field.height);
-    }
-
+  }
+  // Rebound on filed top and bottom walls
+  else if(ball_collider.y < 0 || ball_collider.y + ball_collider.h > field.height)
+  {                             
+    ball_.Rebound(Ball::BounceDirection::kVertical);
+  }
 }
 
 /**
- * two approaches have been implemented: 
- * using own collision function or
- * use the SDL_intersectRect function.
+ * Paddle collision is calculated using the SDL_HasIntersection and 
+ * when true, the intersection rectange is calculated.
+ * The logic is as follows:
+ *  - when the intersection is wider than higher --> the collision happened on top or bottom edges;
+ *  - when the intersection is higher than wider --> the collision happened on the left or right sides of the paddle.   
  */
 void Game::CheckPaddleCollision(Ball &ball, Paddle &paddle)
 {
-  // if (CheckCollision(ball.getCollider(), paddle.getCollider()))
-  // {
-  //   // rebound ball
-  //   ball.Rebound(Ball::CollisionSide::left_right);
-
-  //   // increase volleys count
-  //   ++volleys_;
-  // }
-
-  // Alternative use SDL Collision function
   if(SDL_HasIntersection(&(ball.getCollider()), &(paddle.getCollider())))
   {
     SDL_Rect collision_intersection;
@@ -157,82 +128,17 @@ void Game::CheckPaddleCollision(Ball &ball, Paddle &paddle)
       {
           ball.Rebound(Ball::BounceDirection::kVertical);
       }  
-      // increase volley count
-      ++volleys_;
     }
+    ++volleys_;
   }
-}
-
-// Check gameLevel:
-//  if volleys == 4
-//  1. increase speed to SPEED_LEVEL_2
-//  2. increase Paddles angles (set to ANGLE_LEVEL_2)
-
-//  if volleys == 12 
-//  1. increase ball speed: set to SPEED_LEVEL_3
-//  2. increase Paddles angles (set to ANGLE_LEVEL_3...)
- 
-// Based on lazyfoo tutorial collision method.
-// Alternative: use SDL_IntersectRect() 
-// TODO: refactor names 
-// TODO: reimplement using SDL_intersect-
-bool Game::CheckCollision(const SDL_Rect &a, const SDL_Rect &b)
-{
-  //The sides of the rectangles
-    int leftA, leftB;
-    int rightA, rightB;
-    int topA, topB;
-    int bottomA, bottomB;
-
-    //Calculate the sides of rect A
-    leftA = a.x;
-    rightA = a.x + a.w;
-    topA = a.y;
-    bottomA = a.y + a.h;
-
-    //Calculate the sides of rect B
-    leftB = b.x;
-    rightB = b.x + b.w;
-    topB = b.y;
-    bottomB = b.y + b.h;
-    //Here is where the collision detection happens. This code calculates the top/bottom and left/right of each of the collison boxes.
-    //If any of the sides from A are outside of B
-    if( bottomA <= topB )
-    {
-        return false;
-    }
-
-    if( topA >= bottomB )
-    {
-        return false;
-    }
-
-    if( rightA <= leftB )
-    {
-        return false;
-    }
-
-    if( leftA >= rightB )
-    {
-        return false;
-    }
-
-    //If none of the sides from A are outside B
-    return true;
 }
 
 /**
  * Serves a new ball and resets game difficulty level
  * NOTE: this function  is called after a point;
- * 1- reinit volleys, 
- * 2- reinit ball speed (done in), 
- * 3- reinit paddle angles
- * NOTE: optional add parameter to whom should be the new ball serviced.
- *       default is served to who lost.
  */
 void Game::ServeNewBall()
 {
       volleys_ = 0;
-      //ball_.setSpeed(); TODO
       ball_.ServeBall(field_.width / 2, field_.height / 2); //sets start position.
 }

@@ -13,17 +13,20 @@ class Paddle : public IRenderable
         kDown,
     };
 
-    //dimensions
+    //Paddle dimensions
     static const int kPaddleWidth = 20;
     static const int kPaddleHeight = 100;
 
-    //Max axis velocity
-    static const int kPaddleVel = 4; //speed: kPaddleVel (px) * FPS --> px/sec; currently: 4 px * 60 fps = 120 px/s
+    //Movement velocity
+    // NOTE: This number shows the velocity of the paddle on each Game-Loop.
+    //       as currently the game operates at around 60 FPS 
+    //       this means the paddle moves at:  4 px/g-loop * 60 g-loops/s = 240 px/s
+    static const int kPaddleVel = 4; 
 
     //Constructor
     Paddle(const int min_y_pos, const int max_y_pos, const int paddle_center_x);
 
-    //Take key presses and adjust velocity
+    //React to user controls:
     void startMovement(Direction direction);
     void stopMovement(Direction direction);
 
